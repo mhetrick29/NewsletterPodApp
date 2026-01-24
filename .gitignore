@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+venv/
+.env
+
+# Database
+*.db
+
+# Node
+node_modules/
+dist/
+
+# Credentials (DO NOT COMMIT)
+parsers/credentials.json
+parsers/token.pickle
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
