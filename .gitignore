@@ -20,6 +20,7 @@ parsers/token.pickle
 # IDE
 .vscode/
 .idea/
+.claude/
 
 # OS
 .DS_Store
