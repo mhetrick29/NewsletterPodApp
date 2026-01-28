@@ -24,3 +24,6 @@ pytz==2024.1
 
 # Utilities
 pydantic==2.5.3
+
+# AI Summarization (Phase 2)
+anthropic>=0.76.0

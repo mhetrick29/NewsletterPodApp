@@ -1,6 +1,7 @@
 """
 FastAPI application for Newsletter Podcast Agent
 Phase 1: Core backend with newsletter extraction and viewing
+Phase 2: AI-powered summarization
 """
 from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,6 +9,19 @@ from sqlalchemy.orm import Session
 from typing import Optional, List
 from datetime import datetime
 from pydantic import BaseModel
+import os
+import logging
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 from database import get_db, init_db, Newsletter
 from newsletter_service import NewsletterService
@@ -225,6 +239,344 @@ def get_stats(db: Session = Depends(get_db)):
 
 
 from datetime import timedelta
+
+
+@app.get("/api/summary")
+def get_daily_summary(
+    date: Optional[str] = Query(None, description="Date to summarize (YYYY-MM-DD), defaults to today"),
+    db: Session = Depends(get_db)
+):
+    """
+    Get a summary of newsletters grouped by category for a specific date.
+
+    Query Parameters:
+    - date: The date to summarize (defaults to today in local time)
+
+    Returns:
+    - Newsletters grouped by category with key information
+    """
+    from sqlalchemy import func
+    from zoneinfo import ZoneInfo
+    import time
+
+    # Get local timezone
+    local_tz = ZoneInfo(time.tzname[0]) if time.daylight == 0 else ZoneInfo(time.tzname[1])
+    try:
+        # Try to get proper timezone from system
+        import subprocess
+        tz_result = subprocess.run(['readlink', '/etc/localtime'], capture_output=True, text=True)
+        if tz_result.returncode == 0:
+            # Extract timezone from path like /var/db/timezone/zoneinfo/America/Los_Angeles
+            tz_path = tz_result.stdout.strip()
+            tz_name = '/'.join(tz_path.split('/')[-2:])
+            local_tz = ZoneInfo(tz_name)
+    except Exception:
+        pass  # Fall back to UTC offset-based timezone
+
+    # Parse date or use today (in local time)
+    if date:
+        target_date = datetime.fromisoformat(date).date()
+    else:
+        target_date = datetime.now(local_tz).date()
+
+    # Get start and end of the target date in local time, then convert to UTC
+    local_start = datetime.combine(target_date, datetime.min.time()).replace(tzinfo=local_tz)
+    local_end = datetime.combine(target_date, datetime.max.time()).replace(tzinfo=local_tz)
+
+    # Convert to UTC for database query (database stores UTC)
+    start_dt = local_start.astimezone(ZoneInfo('UTC')).replace(tzinfo=None)
+    end_dt = local_end.astimezone(ZoneInfo('UTC')).replace(tzinfo=None)
+
+    # Query newsletters for this date
+    newsletters = db.query(Newsletter).filter(
+        Newsletter.received_at >= start_dt,
+        Newsletter.received_at <= end_dt
+    ).order_by(Newsletter.category, Newsletter.received_at.desc()).all()
+
+    # Group by category
+    categories = {}
+    category_display_names = {
+        'product_ai': 'Product & AI',
+        'health_fitness': 'Health & Fitness',
+        'finance': 'Finance',
+        'sahil_bloom': 'Sahil Bloom'
+    }
+
+    for nl in newsletters:
+        cat = nl.category or 'uncategorized'
+        if cat not in categories:
+            categories[cat] = {
+                'display_name': category_display_names.get(cat, cat.replace('_', ' ').title()),
+                'newsletters': []
+            }
+
+        categories[cat]['newsletters'].append({
+            'id': nl.id,
+            'sender_name': nl.sender_name,
+            'subject': nl.subject,
+            'title': nl.title,
+            'date': nl.date,
+            'platform': nl.platform,
+            'parsed_content': nl.parsed_content[:500] + '...' if nl.parsed_content and len(nl.parsed_content) > 500 else nl.parsed_content,
+            'sections': nl.sections
+        })
+
+    return {
+        'date': target_date.isoformat(),
+        'total_newsletters': len(newsletters),
+        'categories': categories
+    }
+
+
+# ============================================
+# Phase 2: AI Summarization Endpoints
+# ============================================
+
+def get_summarization_service():
+    """Get the AI summarization service (lazy initialization)"""
+    from summarization_service import SummarizationService
+    try:
+        return SummarizationService()
+    except ValueError as e:
+        raise HTTPException(
+            status_code=503,
+            detail=str(e)
+        )
+
+
+@app.get("/api/newsletters/{newsletter_id}/ai-summary")
+def get_ai_summary(newsletter_id: int, db: Session = Depends(get_db)):
+    """
+    Get an AI-generated summary for a specific newsletter.
+    Uses Claude to read and understand the newsletter like a human would.
+    """
+    newsletter = db.query(Newsletter).filter(Newsletter.id == newsletter_id).first()
+    if not newsletter:
+        raise HTTPException(status_code=404, detail="Newsletter not found")
+
+    if not newsletter.raw_html:
+        raise HTTPException(
+            status_code=400,
+            detail="Newsletter has no HTML content to summarize"
+        )
+
+    try:
+        service = get_summarization_service()
+        summary = service.summarize_newsletter(
+            newsletter.raw_html,
+            newsletter.sender_name,
+            newsletter.subject
+        )
+        summary['newsletter_id'] = newsletter_id
+        summary['sender_name'] = newsletter.sender_name
+        summary['category'] = newsletter.category
+        return summary
+    except Exception as e:
+        logger.error(f"AI summary failed for newsletter {newsletter_id}: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to generate AI summary: {str(e)}"
+        )
+
+
+@app.get("/api/ai-summary")
+def get_daily_ai_summary(
+    date: Optional[str] = Query(None, description="Date to summarize (YYYY-MM-DD), defaults to today"),
+    db: Session = Depends(get_db)
+):
+    """
+    Get AI-generated summaries for all newsletters on a specific date.
+    Groups newsletters by category with intelligent summaries.
+    """
+    from zoneinfo import ZoneInfo
+    import time
+
+    # Get local timezone (same logic as /api/summary)
+    local_tz = ZoneInfo('UTC')
+    try:
+        import subprocess
+        tz_result = subprocess.run(['readlink', '/etc/localtime'], capture_output=True, text=True)
+        if tz_result.returncode == 0:
+            tz_path = tz_result.stdout.strip()
+            tz_name = '/'.join(tz_path.split('/')[-2:])
+            local_tz = ZoneInfo(tz_name)
+    except Exception:
+        pass
+
+    # Parse date or use today
+    if date:
+        target_date = datetime.fromisoformat(date).date()
+    else:
+        target_date = datetime.now(local_tz).date()
+
+    # Get date boundaries in UTC
+    local_start = datetime.combine(target_date, datetime.min.time()).replace(tzinfo=local_tz)
+    local_end = datetime.combine(target_date, datetime.max.time()).replace(tzinfo=local_tz)
+    start_dt = local_start.astimezone(ZoneInfo('UTC')).replace(tzinfo=None)
+    end_dt = local_end.astimezone(ZoneInfo('UTC')).replace(tzinfo=None)
+
+    # Query newsletters
+    newsletters = db.query(Newsletter).filter(
+        Newsletter.received_at >= start_dt,
+        Newsletter.received_at <= end_dt
+    ).order_by(Newsletter.category, Newsletter.received_at.desc()).all()
+
+    if not newsletters:
+        return {
+            'date': target_date.isoformat(),
+            'total_newsletters': 0,
+            'categories': {},
+            'message': 'No newsletters found for this date'
+        }
+
+    # Generate AI summaries
+    try:
+        service = get_summarization_service()
+    except HTTPException:
+        raise
+
+    category_display_names = {
+        'product_ai': 'Product & AI',
+        'health_fitness': 'Health & Fitness',
+        'finance': 'Finance',
+        'sahil_bloom': 'Sahil Bloom'
+    }
+
+    # Group newsletters by category first
+    newsletters_by_category = {}
+    for nl in newsletters:
+        cat = nl.category or 'uncategorized'
+        if cat not in newsletters_by_category:
+            newsletters_by_category[cat] = []
+        newsletters_by_category[cat].append(nl)
+
+    # Generate ONE AI summary per category
+    categories = {}
+    for cat, cat_newsletters in newsletters_by_category.items():
+        display_name = category_display_names.get(cat, cat.replace('_', ' ').title())
+
+        try:
+            # Prepare newsletter data for the category
+            newsletter_data = [
+                {
+                    'id': nl.id,
+                    'html_content': nl.raw_html,
+                    'sender_name': nl.sender_name,
+                    'subject': nl.subject
+                }
+                for nl in cat_newsletters if nl.raw_html
+            ]
+
+            if newsletter_data:
+                category_summary = service.summarize_category(newsletter_data, display_name)
+            else:
+                category_summary = {
+                    'summary': 'No content available for summarization.',
+                    'key_points': [],
+                    'newsletters': [],
+                    'ai_generated': False
+                }
+        except Exception as e:
+            logger.error(f"Failed to summarize category {cat}: {e}")
+            category_summary = {
+                'summary': f'Failed to generate AI summary: {str(e)}',
+                'key_points': [],
+                'newsletters': [],
+                'error': True
+            }
+
+        categories[cat] = {
+            'display_name': display_name,
+            'newsletter_count': len(cat_newsletters),
+            'summary': category_summary.get('summary', ''),
+            'key_points': category_summary.get('key_points', []),
+            'newsletters': category_summary.get('newsletters', []),
+            'ai_generated': category_summary.get('ai_generated', False)
+        }
+
+    return {
+        'date': target_date.isoformat(),
+        'total_newsletters': len(newsletters),
+        'categories': categories,
+        'ai_generated': True
+    }
+
+
+@app.get("/api/daily-briefing")
+def get_daily_briefing(
+    date: Optional[str] = Query(None, description="Date for briefing (YYYY-MM-DD), defaults to today"),
+    db: Session = Depends(get_db)
+):
+    """
+    Generate a podcast-style daily briefing from all newsletters.
+    Returns natural language text suitable for reading aloud or text-to-speech.
+    """
+    from zoneinfo import ZoneInfo
+
+    # Get local timezone
+    local_tz = ZoneInfo('UTC')
+    try:
+        import subprocess
+        tz_result = subprocess.run(['readlink', '/etc/localtime'], capture_output=True, text=True)
+        if tz_result.returncode == 0:
+            tz_path = tz_result.stdout.strip()
+            tz_name = '/'.join(tz_path.split('/')[-2:])
+            local_tz = ZoneInfo(tz_name)
+    except Exception:
+        pass
+
+    # Parse date
+    if date:
+        target_date = datetime.fromisoformat(date).date()
+    else:
+        target_date = datetime.now(local_tz).date()
+
+    # Get date boundaries
+    local_start = datetime.combine(target_date, datetime.min.time()).replace(tzinfo=local_tz)
+    local_end = datetime.combine(target_date, datetime.max.time()).replace(tzinfo=local_tz)
+    start_dt = local_start.astimezone(ZoneInfo('UTC')).replace(tzinfo=None)
+    end_dt = local_end.astimezone(ZoneInfo('UTC')).replace(tzinfo=None)
+
+    # Query newsletters
+    newsletters = db.query(Newsletter).filter(
+        Newsletter.received_at >= start_dt,
+        Newsletter.received_at <= end_dt,
+        Newsletter.raw_html.isnot(None)
+    ).all()
+
+    if not newsletters:
+        return {
+            'date': target_date.isoformat(),
+            'briefing': f"No newsletters found for {target_date.isoformat()}.",
+            'newsletter_count': 0
+        }
+
+    # Generate briefing
+    try:
+        service = get_summarization_service()
+        newsletter_data = [
+            {
+                'id': nl.id,
+                'html_content': nl.raw_html,
+                'sender_name': nl.sender_name,
+                'subject': nl.subject,
+                'category': nl.category
+            }
+            for nl in newsletters
+        ]
+        briefing = service.generate_daily_briefing(newsletter_data)
+        return {
+            'date': target_date.isoformat(),
+            'briefing': briefing,
+            'newsletter_count': len(newsletters)
+        }
+    except Exception as e:
+        logger.error(f"Failed to generate daily briefing: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to generate briefing: {str(e)}"
+        )
+
 
 if __name__ == "__main__":
     import uvicorn

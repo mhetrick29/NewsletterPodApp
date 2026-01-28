@@ -151,7 +151,7 @@ Get overall statistics
 Newsletters are automatically categorized:
 
 - **Product & AI**: Peter Yang, Lenny, Stratechery, TLDR, Half Baked, etc.
-- **Health & Fitness**: The Morning Shakeout, FittInsider, Sweat Science
+- **Health & Fitness**: The Morning Shakeout, FittInsider (Anthony Vennare), Sweat Science
 - **Finance**: Snacks, Chartr
 - **Sahil Bloom**: Curiosity Chronicle (dedicated category)
 

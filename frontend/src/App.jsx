@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import NewsletterList from './components/NewsletterList';
 import NewsletterDetail from './components/NewsletterDetail';
+import SummaryView from './components/SummaryView';
 import './App.css';
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <main className="main-content">
           <Routes>
             <Route path="/" element={<NewsletterList />} />
+            <Route path="/summary" element={<SummaryView />} />
             <Route path="/newsletter/:id" element={<NewsletterDetail />} />
           </Routes>
         </main>

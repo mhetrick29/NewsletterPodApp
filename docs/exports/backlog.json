@@ -1,0 +1,1474 @@
+{
+  "exported_at": "2026-01-27T18:58:32.341057",
+  "phases": [
+    {
+      "name": "Phase 0",
+      "full_name": "Phase 0: Foundation & Setup",
+      "tasks": [
+        {
+          "id": "P0-01",
+          "name": "Initialize GitHub repo with README and .gitignore",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "setup"
+          ],
+          "phase": "Phase 0"
+        },
+        {
+          "id": "P0-02",
+          "name": "Create project directory structure (/backend, /frontend, /parsers, /docs)",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "setup"
+          ],
+          "phase": "Phase 0"
+        },
+        {
+          "id": "P0-03",
+          "name": "Set up requirements.txt with dependencies",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "setup"
+          ],
+          "phase": "Phase 0"
+        },
+        {
+          "id": "P0-04",
+          "name": "Create .env.example for environment variables",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "setup"
+          ],
+          "phase": "Phase 0"
+        },
+        {
+          "id": "P0-05",
+          "name": "Migrate existing parser code to /parsers",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "setup"
+          ],
+          "phase": "Phase 0"
+        }
+      ]
+    },
+    {
+      "name": "Phase 1",
+      "full_name": "Phase 1: Core Backend & Basic UI",
+      "tasks": [
+        {
+          "id": "P1-01",
+          "name": "Set up FastAPI backend with CORS",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "backend"
+          ],
+          "phase": "Phase 1"
+        },
+        {
+          "id": "P1-02",
+          "name": "Create SQLite database with SQLAlchemy ORM",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "backend",
+            "database"
+          ],
+          "phase": "Phase 1"
+        },
+        {
+          "id": "P1-03",
+          "name": "Create Newsletter model with all fields",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "backend",
+            "database"
+          ],
+          "phase": "Phase 1"
+        },
+        {
+          "id": "P1-04",
+          "name": "Implement Gmail OAuth 2.0 authentication",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "backend",
+            "gmail"
+          ],
+          "phase": "Phase 1"
+        },
+        {
+          "id": "P1-05",
+          "name": "GET /api/newsletters - List parsed newsletters",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "backend",
+            "api"
+          ],
+          "phase": "Phase 1"
+        },
+        {
+          "id": "P1-06",
+          "name": "GET /api/newsletters/{id} - Get newsletter details",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "backend",
+            "api"
+          ],
+          "phase": "Phase 1"
+        },
+        {
+          "id": "P1-07",
+          "name": "POST /api/extract - Trigger email extraction",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "backend",
+            "api"
+          ],
+          "phase": "Phase 1"
+        },
+        {
+          "id": "P1-08",
+          "name": "GET /api/categories - List categories with counts",
+          "status": "done",
+          "priority": "P1",
+          "labels": [
+            "backend",
+            "api"
+          ],
+          "phase": "Phase 1"
+        },
+        {
+          "id": "P1-09",
+          "name": "GET /api/stats - Overall statistics",
+          "status": "done",
+          "priority": "P2",
+          "labels": [
+            "backend",
+            "api"
+          ],
+          "phase": "Phase 1"
+        },
+        {
+          "id": "P1-10",
+          "name": "Multi-platform parser (Substack, Beehiiv, TLDR, ConvertKit, Generic)",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "parser"
+          ],
+          "phase": "Phase 1"
+        },
+        {
+          "id": "P1-11",
+          "name": "Newsletter auto-categorization by sender",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "parser"
+          ],
+          "phase": "Phase 1"
+        },
+        {
+          "id": "P1-12",
+          "name": "Content validation (min length, sentence structure)",
+          "status": "done",
+          "priority": "P1",
+          "labels": [
+            "parser"
+          ],
+          "phase": "Phase 1"
+        },
+        {
+          "id": "P1-13",
+          "name": "React frontend with Vite setup",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 1"
+        },
+        {
+          "id": "P1-14",
+          "name": "Newsletter list view with cards",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 1"
+        },
+        {
+          "id": "P1-15",
+          "name": "Newsletter detail view",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 1"
+        },
+        {
+          "id": "P1-16",
+          "name": "Category and date filtering",
+          "status": "done",
+          "priority": "P1",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 1"
+        },
+        {
+          "id": "P1-17",
+          "name": "\"Extract Newsletters\" button",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 1"
+        }
+      ]
+    },
+    {
+      "name": "Phase 2",
+      "full_name": "Phase 2: AI Summarization & Script Generation",
+      "tasks": [
+        {
+          "id": "P2-01",
+          "name": "Integrate Anthropic Claude API",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "backend",
+            "ai"
+          ],
+          "phase": "Phase 2"
+        },
+        {
+          "id": "P2-02",
+          "name": "Create summarization service module",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "backend",
+            "ai"
+          ],
+          "phase": "Phase 2"
+        },
+        {
+          "id": "P2-03",
+          "name": "Implement per-category AI summarization",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "backend",
+            "ai"
+          ],
+          "phase": "Phase 2"
+        },
+        {
+          "id": "P2-04",
+          "name": "Add token usage and cost logging",
+          "status": "done",
+          "priority": "P1",
+          "labels": [
+            "backend",
+            "ai"
+          ],
+          "phase": "Phase 2"
+        },
+        {
+          "id": "P2-05",
+          "name": "GET /api/ai-summary - Daily AI summaries by category",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "backend",
+            "api"
+          ],
+          "phase": "Phase 2"
+        },
+        {
+          "id": "P2-06",
+          "name": "GET /api/newsletters/{id}/ai-summary - Single newsletter AI summary",
+          "status": "done",
+          "priority": "P1",
+          "labels": [
+            "backend",
+            "api"
+          ],
+          "phase": "Phase 2"
+        },
+        {
+          "id": "P2-07",
+          "name": "GET /api/daily-briefing - Podcast-style script",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "backend",
+            "api"
+          ],
+          "phase": "Phase 2"
+        },
+        {
+          "id": "P2-08",
+          "name": "Summary view in frontend with AI toggle",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 2"
+        },
+        {
+          "id": "P2-09",
+          "name": "\"Generate Podcast Script\" button",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 2"
+        },
+        {
+          "id": "P2-10",
+          "name": "Display briefing/script in UI",
+          "status": "done",
+          "priority": "P0",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 2"
+        },
+        {
+          "id": "P2-11",
+          "name": "Local timezone handling for date filtering",
+          "status": "done",
+          "priority": "P1",
+          "labels": [
+            "backend"
+          ],
+          "phase": "Phase 2"
+        },
+        {
+          "id": "P2-12",
+          "name": "Prompt templates for different newsletter types",
+          "status": "backlog",
+          "priority": "P2",
+          "labels": [
+            "backend",
+            "ai"
+          ],
+          "phase": "Phase 2"
+        },
+        {
+          "id": "P2-13",
+          "name": "Summary quality validation",
+          "status": "backlog",
+          "priority": "P2",
+          "labels": [
+            "backend",
+            "ai"
+          ],
+          "phase": "Phase 2"
+        },
+        {
+          "id": "P2-14",
+          "name": "Edit/regenerate summary capability",
+          "status": "backlog",
+          "priority": "P2",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 2"
+        }
+      ]
+    },
+    {
+      "name": "Phase 3",
+      "full_name": "Phase 3: Audio Generation & Playback",
+      "tasks": [
+        {
+          "id": "P3-01",
+          "name": "Integrate TTS engine (Google Cloud TTS or ElevenLabs)",
+          "status": "ready",
+          "priority": "P0",
+          "labels": [
+            "backend",
+            "audio"
+          ],
+          "phase": "Phase 3"
+        },
+        {
+          "id": "P3-02",
+          "name": "Voice selection and configuration",
+          "status": "backlog",
+          "priority": "P1",
+          "labels": [
+            "backend",
+            "audio"
+          ],
+          "phase": "Phase 3"
+        },
+        {
+          "id": "P3-03",
+          "name": "Audio processing (normalization, pauses, chapters)",
+          "status": "backlog",
+          "priority": "P1",
+          "labels": [
+            "backend",
+            "audio"
+          ],
+          "phase": "Phase 3"
+        },
+        {
+          "id": "P3-04",
+          "name": "MP3 file generation and storage",
+          "status": "backlog",
+          "priority": "P0",
+          "labels": [
+            "backend",
+            "audio"
+          ],
+          "phase": "Phase 3"
+        },
+        {
+          "id": "P3-05",
+          "name": "POST /api/generate-podcast - Create audio from script",
+          "status": "backlog",
+          "priority": "P0",
+          "labels": [
+            "backend",
+            "api"
+          ],
+          "phase": "Phase 3"
+        },
+        {
+          "id": "P3-06",
+          "name": "GET /api/podcasts - List all podcasts",
+          "status": "backlog",
+          "priority": "P0",
+          "labels": [
+            "backend",
+            "api"
+          ],
+          "phase": "Phase 3"
+        },
+        {
+          "id": "P3-07",
+          "name": "GET /api/podcasts/{id}/stream - Stream audio file",
+          "status": "backlog",
+          "priority": "P0",
+          "labels": [
+            "backend",
+            "api"
+          ],
+          "phase": "Phase 3"
+        },
+        {
+          "id": "P3-08",
+          "name": "GET /api/podcasts/{id}/download - Download audio",
+          "status": "backlog",
+          "priority": "P1",
+          "labels": [
+            "backend",
+            "api"
+          ],
+          "phase": "Phase 3"
+        },
+        {
+          "id": "P3-09",
+          "name": "Podcasts database table",
+          "status": "backlog",
+          "priority": "P0",
+          "labels": [
+            "backend",
+            "database"
+          ],
+          "phase": "Phase 3"
+        },
+        {
+          "id": "P3-10",
+          "name": "PodcastNewsletter junction table",
+          "status": "backlog",
+          "priority": "P1",
+          "labels": [
+            "backend",
+            "database"
+          ],
+          "phase": "Phase 3"
+        },
+        {
+          "id": "P3-11",
+          "name": "Audio player component in frontend",
+          "status": "backlog",
+          "priority": "P0",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 3"
+        },
+        {
+          "id": "P3-12",
+          "name": "Play, pause, skip controls",
+          "status": "backlog",
+          "priority": "P0",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 3"
+        },
+        {
+          "id": "P3-13",
+          "name": "Progress bar with timestamp",
+          "status": "backlog",
+          "priority": "P0",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 3"
+        },
+        {
+          "id": "P3-14",
+          "name": "Playback speed control (0.75x - 2x)",
+          "status": "backlog",
+          "priority": "P1",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 3"
+        },
+        {
+          "id": "P3-15",
+          "name": "Chapter navigation (jump to category)",
+          "status": "backlog",
+          "priority": "P2",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 3"
+        },
+        {
+          "id": "P3-16",
+          "name": "Download button",
+          "status": "backlog",
+          "priority": "P2",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 3"
+        },
+        {
+          "id": "P3-17",
+          "name": "File cleanup for old podcasts (>30 days)",
+          "status": "backlog",
+          "priority": "P2",
+          "labels": [
+            "backend"
+          ],
+          "phase": "Phase 3"
+        }
+      ]
+    },
+    {
+      "name": "Phase 4",
+      "full_name": "Phase 4: Automation & Scheduling",
+      "tasks": [
+        {
+          "id": "P4-01",
+          "name": "Set up task scheduler (APScheduler or Celery)",
+          "status": "backlog",
+          "priority": "P0",
+          "labels": [
+            "backend",
+            "automation"
+          ],
+          "phase": "Phase 4"
+        },
+        {
+          "id": "P4-02",
+          "name": "Daily extraction task at 5:30 AM",
+          "status": "backlog",
+          "priority": "P0",
+          "labels": [
+            "backend",
+            "automation"
+          ],
+          "phase": "Phase 4"
+        },
+        {
+          "id": "P4-03",
+          "name": "Automatic parsing after extraction",
+          "status": "backlog",
+          "priority": "P0",
+          "labels": [
+            "backend",
+            "automation"
+          ],
+          "phase": "Phase 4"
+        },
+        {
+          "id": "P4-04",
+          "name": "Automatic summarization and podcast generation",
+          "status": "backlog",
+          "priority": "P0",
+          "labels": [
+            "backend",
+            "automation"
+          ],
+          "phase": "Phase 4"
+        },
+        {
+          "id": "P4-05",
+          "name": "Error handling and retry logic",
+          "status": "backlog",
+          "priority": "P1",
+          "labels": [
+            "backend",
+            "automation"
+          ],
+          "phase": "Phase 4"
+        },
+        {
+          "id": "P4-06",
+          "name": "User preferences database table",
+          "status": "backlog",
+          "priority": "P1",
+          "labels": [
+            "backend",
+            "database"
+          ],
+          "phase": "Phase 4"
+        },
+        {
+          "id": "P4-07",
+          "name": "Category priority/ordering preference",
+          "status": "backlog",
+          "priority": "P1",
+          "labels": [
+            "backend"
+          ],
+          "phase": "Phase 4"
+        },
+        {
+          "id": "P4-08",
+          "name": "Default categories for daily podcast",
+          "status": "backlog",
+          "priority": "P1",
+          "labels": [
+            "backend"
+          ],
+          "phase": "Phase 4"
+        },
+        {
+          "id": "P4-09",
+          "name": "Voice preference setting",
+          "status": "backlog",
+          "priority": "P2",
+          "labels": [
+            "backend"
+          ],
+          "phase": "Phase 4"
+        },
+        {
+          "id": "P4-10",
+          "name": "Preferred playback speed setting",
+          "status": "backlog",
+          "priority": "P2",
+          "labels": [
+            "backend"
+          ],
+          "phase": "Phase 4"
+        },
+        {
+          "id": "P4-11",
+          "name": "Email notification when podcast ready",
+          "status": "backlog",
+          "priority": "P2",
+          "labels": [
+            "backend",
+            "notification"
+          ],
+          "phase": "Phase 4"
+        },
+        {
+          "id": "P4-12",
+          "name": "Settings page in frontend",
+          "status": "backlog",
+          "priority": "P1",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 4"
+        },
+        {
+          "id": "P4-13",
+          "name": "New podcast notification indicator",
+          "status": "backlog",
+          "priority": "P2",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 4"
+        },
+        {
+          "id": "P4-14",
+          "name": "System status / last run info display",
+          "status": "backlog",
+          "priority": "P2",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 4"
+        },
+        {
+          "id": "P4-15",
+          "name": "API usage and cost tracking dashboard",
+          "status": "backlog",
+          "priority": "P2",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 4"
+        }
+      ]
+    },
+    {
+      "name": "Phase 5",
+      "full_name": "Phase 5: Polish & Advanced Features",
+      "tasks": [
+        {
+          "id": "P5-01",
+          "name": "Bookmark/save newsletters for later",
+          "status": "backlog",
+          "priority": "P2",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 5"
+        },
+        {
+          "id": "P5-02",
+          "name": "Search across all parsed content",
+          "status": "backlog",
+          "priority": "P1",
+          "labels": [
+            "backend",
+            "frontend"
+          ],
+          "phase": "Phase 5"
+        },
+        {
+          "id": "P5-03",
+          "name": "Custom category creation",
+          "status": "backlog",
+          "priority": "P2",
+          "labels": [
+            "backend",
+            "frontend"
+          ],
+          "phase": "Phase 5"
+        },
+        {
+          "id": "P5-04",
+          "name": "Weekly/monthly digest options",
+          "status": "backlog",
+          "priority": "P2",
+          "labels": [
+            "backend"
+          ],
+          "phase": "Phase 5"
+        },
+        {
+          "id": "P5-05",
+          "name": "Cache summaries to avoid re-generation",
+          "status": "backlog",
+          "priority": "P1",
+          "labels": [
+            "backend"
+          ],
+          "phase": "Phase 5"
+        },
+        {
+          "id": "P5-06",
+          "name": "Batch processing for large volumes",
+          "status": "backlog",
+          "priority": "P2",
+          "labels": [
+            "backend"
+          ],
+          "phase": "Phase 5"
+        },
+        {
+          "id": "P5-07",
+          "name": "Database indexing and optimization",
+          "status": "backlog",
+          "priority": "P2",
+          "labels": [
+            "backend",
+            "database"
+          ],
+          "phase": "Phase 5"
+        },
+        {
+          "id": "P5-08",
+          "name": "Dark mode",
+          "status": "backlog",
+          "priority": "P3",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 5"
+        },
+        {
+          "id": "P5-09",
+          "name": "Mobile-responsive design improvements",
+          "status": "backlog",
+          "priority": "P2",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 5"
+        },
+        {
+          "id": "P5-10",
+          "name": "Keyboard shortcuts",
+          "status": "backlog",
+          "priority": "P3",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 5"
+        },
+        {
+          "id": "P5-11",
+          "name": "Progressive Web App (PWA) support",
+          "status": "backlog",
+          "priority": "P3",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 5"
+        },
+        {
+          "id": "P5-12",
+          "name": "Analytics: listening time tracking",
+          "status": "backlog",
+          "priority": "P2",
+          "labels": [
+            "backend"
+          ],
+          "phase": "Phase 5"
+        },
+        {
+          "id": "P5-13",
+          "name": "Analytics: completion rates",
+          "status": "backlog",
+          "priority": "P2",
+          "labels": [
+            "backend"
+          ],
+          "phase": "Phase 5"
+        },
+        {
+          "id": "P5-14",
+          "name": "Analytics dashboard in frontend",
+          "status": "backlog",
+          "priority": "P2",
+          "labels": [
+            "frontend"
+          ],
+          "phase": "Phase 5"
+        }
+      ]
+    },
+    {
+      "name": "Future Ideas",
+      "full_name": "Future Ideas (Post-Phase 5)",
+      "tasks": [
+        {
+          "id": "F-01",
+          "name": "Personalized summaries based on user interests",
+          "status": "idea",
+          "priority": "P1",
+          "labels": [
+            "ai",
+            "personalization"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-02",
+          "name": "Track engagement (clicks, time spent) for personalization",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "personalization"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-03",
+          "name": "Thumbs up/down feedback on summaries",
+          "status": "idea",
+          "priority": "P1",
+          "labels": [
+            "personalization",
+            "frontend"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-04",
+          "name": "Explicit interest settings (\"more AI, less fundraising\")",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "personalization"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-05",
+          "name": "Learn preferred summary length/detail level",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "personalization",
+            "ai"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-06",
+          "name": "Remember read topics to avoid repetition",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "personalization"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-07",
+          "name": "Weight trusted sources more heavily",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "personalization"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-08",
+          "name": "Multi-user support with authentication",
+          "status": "idea",
+          "priority": "P1",
+          "labels": [
+            "backend",
+            "auth"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-09",
+          "name": "Per-user Gmail connections",
+          "status": "idea",
+          "priority": "P1",
+          "labels": [
+            "backend",
+            "gmail"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-10",
+          "name": "PostgreSQL migration for scalability",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "backend",
+            "database"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-11",
+          "name": "Native iOS app",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "mobile"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-12",
+          "name": "Native Android app",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "mobile"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-13",
+          "name": "Offline playback support",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "mobile"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-14",
+          "name": "CarPlay / Android Auto integration",
+          "status": "idea",
+          "priority": "P3",
+          "labels": [
+            "mobile"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-15",
+          "name": "Cross-newsletter insights and connections",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "ai"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-16",
+          "name": "Automatic topic trending analysis",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "ai"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-17",
+          "name": "Smart content recommendations",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "ai"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-18",
+          "name": "Spotify/Apple Podcasts distribution",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "distribution"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-19",
+          "name": "RSS feed generation",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "distribution"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-20",
+          "name": "Notion integration for highlights",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "integration"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-21",
+          "name": "Readwise integration",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "integration"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-22",
+          "name": "Support for RSS feeds (not just Gmail)",
+          "status": "idea",
+          "priority": "P1",
+          "labels": [
+            "backend"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-23",
+          "name": "YouTube video transcript support",
+          "status": "idea",
+          "priority": "P3",
+          "labels": [
+            "backend"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-24",
+          "name": "Twitter/X threads support",
+          "status": "idea",
+          "priority": "P3",
+          "labels": [
+            "backend"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-25",
+          "name": "Trello/Notion backlog sync",
+          "status": "idea",
+          "priority": "P3",
+          "labels": [
+            "tooling"
+          ],
+          "phase": "Future Ideas"
+        }
+      ]
+    },
+    {
+      "name": "Future Ideas",
+      "full_name": "Future Ideas (Post-Phase 5)",
+      "tasks": [
+        {
+          "id": "F-01",
+          "name": "Personalized summaries based on user interests",
+          "status": "idea",
+          "priority": "P1",
+          "labels": [
+            "ai",
+            "personalization"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-02",
+          "name": "Track engagement (clicks, time spent) for personalization",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "personalization"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-03",
+          "name": "Thumbs up/down feedback on summaries",
+          "status": "idea",
+          "priority": "P1",
+          "labels": [
+            "personalization",
+            "frontend"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-04",
+          "name": "Explicit interest settings (\"more AI, less fundraising\")",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "personalization"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-05",
+          "name": "Learn preferred summary length/detail level",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "personalization",
+            "ai"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-06",
+          "name": "Remember read topics to avoid repetition",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "personalization"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-07",
+          "name": "Weight trusted sources more heavily",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "personalization"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-08",
+          "name": "Multi-user support with authentication",
+          "status": "idea",
+          "priority": "P1",
+          "labels": [
+            "backend",
+            "auth"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-09",
+          "name": "Per-user Gmail connections",
+          "status": "idea",
+          "priority": "P1",
+          "labels": [
+            "backend",
+            "gmail"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-10",
+          "name": "PostgreSQL migration for scalability",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "backend",
+            "database"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-11",
+          "name": "Native iOS app",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "mobile"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-12",
+          "name": "Native Android app",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "mobile"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-13",
+          "name": "Offline playback support",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "mobile"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-14",
+          "name": "CarPlay / Android Auto integration",
+          "status": "idea",
+          "priority": "P3",
+          "labels": [
+            "mobile"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-15",
+          "name": "Cross-newsletter insights and connections",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "ai"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-16",
+          "name": "Automatic topic trending analysis",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "ai"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-17",
+          "name": "Smart content recommendations",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "ai"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-18",
+          "name": "Spotify/Apple Podcasts distribution",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "distribution"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-19",
+          "name": "RSS feed generation",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "distribution"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-20",
+          "name": "Notion integration for highlights",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "integration"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-21",
+          "name": "Readwise integration",
+          "status": "idea",
+          "priority": "P2",
+          "labels": [
+            "integration"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-22",
+          "name": "Support for RSS feeds (not just Gmail)",
+          "status": "idea",
+          "priority": "P1",
+          "labels": [
+            "backend"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-23",
+          "name": "YouTube video transcript support",
+          "status": "idea",
+          "priority": "P3",
+          "labels": [
+            "backend"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-24",
+          "name": "Twitter/X threads support",
+          "status": "idea",
+          "priority": "P3",
+          "labels": [
+            "backend"
+          ],
+          "phase": "Future Ideas"
+        },
+        {
+          "id": "F-25",
+          "name": "Trello/Notion backlog sync",
+          "status": "idea",
+          "priority": "P3",
+          "labels": [
+            "tooling"
+          ],
+          "phase": "Future Ideas"
+        }
+      ]
+    }
+  ],
+  "stats": {
+    "total_tasks": 132,
+    "by_status": {
+      "done": 33,
+      "backlog": 48,
+      "ready": 1,
+      "idea": 50
+    },
+    "by_priority": {
+      "P0": 39,
+      "P1": 28,
+      "P2": 54,
+      "P3": 11
+    },
+    "by_phase": {
+      "Phase 0": {
+        "total": 5,
+        "done": 5,
+        "percent": 100
+      },
+      "Phase 1": {
+        "total": 17,
+        "done": 17,
+        "percent": 100
+      },
+      "Phase 2": {
+        "total": 14,
+        "done": 11,
+        "percent": 79
+      },
+      "Phase 3": {
+        "total": 17,
+        "done": 0,
+        "percent": 0
+      },
+      "Phase 4": {
+        "total": 15,
+        "done": 0,
+        "percent": 0
+      },
+      "Phase 5": {
+        "total": 14,
+        "done": 0,
+        "percent": 0
+      },
+      "Future Ideas": {
+        "total": 25,
+        "done": 0,
+        "percent": 0
+      }
+    }
+  }
+}

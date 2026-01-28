@@ -1,0 +1,927 @@
+[
+  {
+    "title": "[P2-12] Prompt templates for different newsletter types",
+    "body": "**Phase:** Phase 2\n**Priority:** P2\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "ai",
+      "P2",
+      "phase-2"
+    ]
+  },
+  {
+    "title": "[P2-13] Summary quality validation",
+    "body": "**Phase:** Phase 2\n**Priority:** P2\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "ai",
+      "P2",
+      "phase-2"
+    ]
+  },
+  {
+    "title": "[P2-14] Edit/regenerate summary capability",
+    "body": "**Phase:** Phase 2\n**Priority:** P2\n**Status:** backlog",
+    "labels": [
+      "frontend",
+      "P2",
+      "phase-2"
+    ]
+  },
+  {
+    "title": "[P3-01] Integrate TTS engine (Google Cloud TTS or ElevenLabs)",
+    "body": "**Phase:** Phase 3\n**Priority:** P0\n**Status:** ready",
+    "labels": [
+      "backend",
+      "audio",
+      "P0",
+      "phase-3"
+    ]
+  },
+  {
+    "title": "[P3-02] Voice selection and configuration",
+    "body": "**Phase:** Phase 3\n**Priority:** P1\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "audio",
+      "P1",
+      "phase-3"
+    ]
+  },
+  {
+    "title": "[P3-03] Audio processing (normalization, pauses, chapters)",
+    "body": "**Phase:** Phase 3\n**Priority:** P1\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "audio",
+      "P1",
+      "phase-3"
+    ]
+  },
+  {
+    "title": "[P3-04] MP3 file generation and storage",
+    "body": "**Phase:** Phase 3\n**Priority:** P0\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "audio",
+      "P0",
+      "phase-3"
+    ]
+  },
+  {
+    "title": "[P3-05] POST /api/generate-podcast - Create audio from script",
+    "body": "**Phase:** Phase 3\n**Priority:** P0\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "api",
+      "P0",
+      "phase-3"
+    ]
+  },
+  {
+    "title": "[P3-06] GET /api/podcasts - List all podcasts",
+    "body": "**Phase:** Phase 3\n**Priority:** P0\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "api",
+      "P0",
+      "phase-3"
+    ]
+  },
+  {
+    "title": "[P3-07] GET /api/podcasts/{id}/stream - Stream audio file",
+    "body": "**Phase:** Phase 3\n**Priority:** P0\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "api",
+      "P0",
+      "phase-3"
+    ]
+  },
+  {
+    "title": "[P3-08] GET /api/podcasts/{id}/download - Download audio",
+    "body": "**Phase:** Phase 3\n**Priority:** P1\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "api",
+      "P1",
+      "phase-3"
+    ]
+  },
+  {
+    "title": "[P3-09] Podcasts database table",
+    "body": "**Phase:** Phase 3\n**Priority:** P0\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "database",
+      "P0",
+      "phase-3"
+    ]
+  },
+  {
+    "title": "[P3-10] PodcastNewsletter junction table",
+    "body": "**Phase:** Phase 3\n**Priority:** P1\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "database",
+      "P1",
+      "phase-3"
+    ]
+  },
+  {
+    "title": "[P3-11] Audio player component in frontend",
+    "body": "**Phase:** Phase 3\n**Priority:** P0\n**Status:** backlog",
+    "labels": [
+      "frontend",
+      "P0",
+      "phase-3"
+    ]
+  },
+  {
+    "title": "[P3-12] Play, pause, skip controls",
+    "body": "**Phase:** Phase 3\n**Priority:** P0\n**Status:** backlog",
+    "labels": [
+      "frontend",
+      "P0",
+      "phase-3"
+    ]
+  },
+  {
+    "title": "[P3-13] Progress bar with timestamp",
+    "body": "**Phase:** Phase 3\n**Priority:** P0\n**Status:** backlog",
+    "labels": [
+      "frontend",
+      "P0",
+      "phase-3"
+    ]
+  },
+  {
+    "title": "[P3-14] Playback speed control (0.75x - 2x)",
+    "body": "**Phase:** Phase 3\n**Priority:** P1\n**Status:** backlog",
+    "labels": [
+      "frontend",
+      "P1",
+      "phase-3"
+    ]
+  },
+  {
+    "title": "[P3-15] Chapter navigation (jump to category)",
+    "body": "**Phase:** Phase 3\n**Priority:** P2\n**Status:** backlog",
+    "labels": [
+      "frontend",
+      "P2",
+      "phase-3"
+    ]
+  },
+  {
+    "title": "[P3-16] Download button",
+    "body": "**Phase:** Phase 3\n**Priority:** P2\n**Status:** backlog",
+    "labels": [
+      "frontend",
+      "P2",
+      "phase-3"
+    ]
+  },
+  {
+    "title": "[P3-17] File cleanup for old podcasts (>30 days)",
+    "body": "**Phase:** Phase 3\n**Priority:** P2\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "P2",
+      "phase-3"
+    ]
+  },
+  {
+    "title": "[P4-01] Set up task scheduler (APScheduler or Celery)",
+    "body": "**Phase:** Phase 4\n**Priority:** P0\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "automation",
+      "P0",
+      "phase-4"
+    ]
+  },
+  {
+    "title": "[P4-02] Daily extraction task at 5:30 AM",
+    "body": "**Phase:** Phase 4\n**Priority:** P0\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "automation",
+      "P0",
+      "phase-4"
+    ]
+  },
+  {
+    "title": "[P4-03] Automatic parsing after extraction",
+    "body": "**Phase:** Phase 4\n**Priority:** P0\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "automation",
+      "P0",
+      "phase-4"
+    ]
+  },
+  {
+    "title": "[P4-04] Automatic summarization and podcast generation",
+    "body": "**Phase:** Phase 4\n**Priority:** P0\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "automation",
+      "P0",
+      "phase-4"
+    ]
+  },
+  {
+    "title": "[P4-05] Error handling and retry logic",
+    "body": "**Phase:** Phase 4\n**Priority:** P1\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "automation",
+      "P1",
+      "phase-4"
+    ]
+  },
+  {
+    "title": "[P4-06] User preferences database table",
+    "body": "**Phase:** Phase 4\n**Priority:** P1\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "database",
+      "P1",
+      "phase-4"
+    ]
+  },
+  {
+    "title": "[P4-07] Category priority/ordering preference",
+    "body": "**Phase:** Phase 4\n**Priority:** P1\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "P1",
+      "phase-4"
+    ]
+  },
+  {
+    "title": "[P4-08] Default categories for daily podcast",
+    "body": "**Phase:** Phase 4\n**Priority:** P1\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "P1",
+      "phase-4"
+    ]
+  },
+  {
+    "title": "[P4-09] Voice preference setting",
+    "body": "**Phase:** Phase 4\n**Priority:** P2\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "P2",
+      "phase-4"
+    ]
+  },
+  {
+    "title": "[P4-10] Preferred playback speed setting",
+    "body": "**Phase:** Phase 4\n**Priority:** P2\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "P2",
+      "phase-4"
+    ]
+  },
+  {
+    "title": "[P4-11] Email notification when podcast ready",
+    "body": "**Phase:** Phase 4\n**Priority:** P2\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "notification",
+      "P2",
+      "phase-4"
+    ]
+  },
+  {
+    "title": "[P4-12] Settings page in frontend",
+    "body": "**Phase:** Phase 4\n**Priority:** P1\n**Status:** backlog",
+    "labels": [
+      "frontend",
+      "P1",
+      "phase-4"
+    ]
+  },
+  {
+    "title": "[P4-13] New podcast notification indicator",
+    "body": "**Phase:** Phase 4\n**Priority:** P2\n**Status:** backlog",
+    "labels": [
+      "frontend",
+      "P2",
+      "phase-4"
+    ]
+  },
+  {
+    "title": "[P4-14] System status / last run info display",
+    "body": "**Phase:** Phase 4\n**Priority:** P2\n**Status:** backlog",
+    "labels": [
+      "frontend",
+      "P2",
+      "phase-4"
+    ]
+  },
+  {
+    "title": "[P4-15] API usage and cost tracking dashboard",
+    "body": "**Phase:** Phase 4\n**Priority:** P2\n**Status:** backlog",
+    "labels": [
+      "frontend",
+      "P2",
+      "phase-4"
+    ]
+  },
+  {
+    "title": "[P5-01] Bookmark/save newsletters for later",
+    "body": "**Phase:** Phase 5\n**Priority:** P2\n**Status:** backlog",
+    "labels": [
+      "frontend",
+      "P2",
+      "phase-5"
+    ]
+  },
+  {
+    "title": "[P5-02] Search across all parsed content",
+    "body": "**Phase:** Phase 5\n**Priority:** P1\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "frontend",
+      "P1",
+      "phase-5"
+    ]
+  },
+  {
+    "title": "[P5-03] Custom category creation",
+    "body": "**Phase:** Phase 5\n**Priority:** P2\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "frontend",
+      "P2",
+      "phase-5"
+    ]
+  },
+  {
+    "title": "[P5-04] Weekly/monthly digest options",
+    "body": "**Phase:** Phase 5\n**Priority:** P2\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "P2",
+      "phase-5"
+    ]
+  },
+  {
+    "title": "[P5-05] Cache summaries to avoid re-generation",
+    "body": "**Phase:** Phase 5\n**Priority:** P1\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "P1",
+      "phase-5"
+    ]
+  },
+  {
+    "title": "[P5-06] Batch processing for large volumes",
+    "body": "**Phase:** Phase 5\n**Priority:** P2\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "P2",
+      "phase-5"
+    ]
+  },
+  {
+    "title": "[P5-07] Database indexing and optimization",
+    "body": "**Phase:** Phase 5\n**Priority:** P2\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "database",
+      "P2",
+      "phase-5"
+    ]
+  },
+  {
+    "title": "[P5-08] Dark mode",
+    "body": "**Phase:** Phase 5\n**Priority:** P3\n**Status:** backlog",
+    "labels": [
+      "frontend",
+      "P3",
+      "phase-5"
+    ]
+  },
+  {
+    "title": "[P5-09] Mobile-responsive design improvements",
+    "body": "**Phase:** Phase 5\n**Priority:** P2\n**Status:** backlog",
+    "labels": [
+      "frontend",
+      "P2",
+      "phase-5"
+    ]
+  },
+  {
+    "title": "[P5-10] Keyboard shortcuts",
+    "body": "**Phase:** Phase 5\n**Priority:** P3\n**Status:** backlog",
+    "labels": [
+      "frontend",
+      "P3",
+      "phase-5"
+    ]
+  },
+  {
+    "title": "[P5-11] Progressive Web App (PWA) support",
+    "body": "**Phase:** Phase 5\n**Priority:** P3\n**Status:** backlog",
+    "labels": [
+      "frontend",
+      "P3",
+      "phase-5"
+    ]
+  },
+  {
+    "title": "[P5-12] Analytics: listening time tracking",
+    "body": "**Phase:** Phase 5\n**Priority:** P2\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "P2",
+      "phase-5"
+    ]
+  },
+  {
+    "title": "[P5-13] Analytics: completion rates",
+    "body": "**Phase:** Phase 5\n**Priority:** P2\n**Status:** backlog",
+    "labels": [
+      "backend",
+      "P2",
+      "phase-5"
+    ]
+  },
+  {
+    "title": "[P5-14] Analytics dashboard in frontend",
+    "body": "**Phase:** Phase 5\n**Priority:** P2\n**Status:** backlog",
+    "labels": [
+      "frontend",
+      "P2",
+      "phase-5"
+    ]
+  },
+  {
+    "title": "[F-01] Personalized summaries based on user interests",
+    "body": "**Phase:** Future Ideas\n**Priority:** P1\n**Status:** idea",
+    "labels": [
+      "ai",
+      "personalization",
+      "P1",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-02] Track engagement (clicks, time spent) for personalization",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "personalization",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-03] Thumbs up/down feedback on summaries",
+    "body": "**Phase:** Future Ideas\n**Priority:** P1\n**Status:** idea",
+    "labels": [
+      "personalization",
+      "frontend",
+      "P1",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-04] Explicit interest settings (\"more AI, less fundraising\")",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "personalization",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-05] Learn preferred summary length/detail level",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "personalization",
+      "ai",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-06] Remember read topics to avoid repetition",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "personalization",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-07] Weight trusted sources more heavily",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "personalization",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-08] Multi-user support with authentication",
+    "body": "**Phase:** Future Ideas\n**Priority:** P1\n**Status:** idea",
+    "labels": [
+      "backend",
+      "auth",
+      "P1",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-09] Per-user Gmail connections",
+    "body": "**Phase:** Future Ideas\n**Priority:** P1\n**Status:** idea",
+    "labels": [
+      "backend",
+      "gmail",
+      "P1",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-10] PostgreSQL migration for scalability",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "backend",
+      "database",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-11] Native iOS app",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "mobile",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-12] Native Android app",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "mobile",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-13] Offline playback support",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "mobile",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-14] CarPlay / Android Auto integration",
+    "body": "**Phase:** Future Ideas\n**Priority:** P3\n**Status:** idea",
+    "labels": [
+      "mobile",
+      "P3",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-15] Cross-newsletter insights and connections",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "ai",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-16] Automatic topic trending analysis",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "ai",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-17] Smart content recommendations",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "ai",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-18] Spotify/Apple Podcasts distribution",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "distribution",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-19] RSS feed generation",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "distribution",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-20] Notion integration for highlights",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "integration",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-21] Readwise integration",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "integration",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-22] Support for RSS feeds (not just Gmail)",
+    "body": "**Phase:** Future Ideas\n**Priority:** P1\n**Status:** idea",
+    "labels": [
+      "backend",
+      "P1",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-23] YouTube video transcript support",
+    "body": "**Phase:** Future Ideas\n**Priority:** P3\n**Status:** idea",
+    "labels": [
+      "backend",
+      "P3",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-24] Twitter/X threads support",
+    "body": "**Phase:** Future Ideas\n**Priority:** P3\n**Status:** idea",
+    "labels": [
+      "backend",
+      "P3",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-25] Trello/Notion backlog sync",
+    "body": "**Phase:** Future Ideas\n**Priority:** P3\n**Status:** idea",
+    "labels": [
+      "tooling",
+      "P3",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-01] Personalized summaries based on user interests",
+    "body": "**Phase:** Future Ideas\n**Priority:** P1\n**Status:** idea",
+    "labels": [
+      "ai",
+      "personalization",
+      "P1",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-02] Track engagement (clicks, time spent) for personalization",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "personalization",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-03] Thumbs up/down feedback on summaries",
+    "body": "**Phase:** Future Ideas\n**Priority:** P1\n**Status:** idea",
+    "labels": [
+      "personalization",
+      "frontend",
+      "P1",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-04] Explicit interest settings (\"more AI, less fundraising\")",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "personalization",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-05] Learn preferred summary length/detail level",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "personalization",
+      "ai",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-06] Remember read topics to avoid repetition",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "personalization",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-07] Weight trusted sources more heavily",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "personalization",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-08] Multi-user support with authentication",
+    "body": "**Phase:** Future Ideas\n**Priority:** P1\n**Status:** idea",
+    "labels": [
+      "backend",
+      "auth",
+      "P1",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-09] Per-user Gmail connections",
+    "body": "**Phase:** Future Ideas\n**Priority:** P1\n**Status:** idea",
+    "labels": [
+      "backend",
+      "gmail",
+      "P1",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-10] PostgreSQL migration for scalability",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "backend",
+      "database",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-11] Native iOS app",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "mobile",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-12] Native Android app",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "mobile",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-13] Offline playback support",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "mobile",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-14] CarPlay / Android Auto integration",
+    "body": "**Phase:** Future Ideas\n**Priority:** P3\n**Status:** idea",
+    "labels": [
+      "mobile",
+      "P3",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-15] Cross-newsletter insights and connections",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "ai",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-16] Automatic topic trending analysis",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "ai",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-17] Smart content recommendations",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "ai",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-18] Spotify/Apple Podcasts distribution",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "distribution",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-19] RSS feed generation",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "distribution",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-20] Notion integration for highlights",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "integration",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-21] Readwise integration",
+    "body": "**Phase:** Future Ideas\n**Priority:** P2\n**Status:** idea",
+    "labels": [
+      "integration",
+      "P2",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-22] Support for RSS feeds (not just Gmail)",
+    "body": "**Phase:** Future Ideas\n**Priority:** P1\n**Status:** idea",
+    "labels": [
+      "backend",
+      "P1",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-23] YouTube video transcript support",
+    "body": "**Phase:** Future Ideas\n**Priority:** P3\n**Status:** idea",
+    "labels": [
+      "backend",
+      "P3",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-24] Twitter/X threads support",
+    "body": "**Phase:** Future Ideas\n**Priority:** P3\n**Status:** idea",
+    "labels": [
+      "backend",
+      "P3",
+      "future-ideas"
+    ]
+  },
+  {
+    "title": "[F-25] Trello/Notion backlog sync",
+    "body": "**Phase:** Future Ideas\n**Priority:** P3\n**Status:** idea",
+    "labels": [
+      "tooling",
+      "P3",
+      "future-ideas"
+    ]
+  }
+]

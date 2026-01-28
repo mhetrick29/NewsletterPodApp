@@ -1,0 +1,265 @@
+Card Name,Card Description,Labels,List Name
+[P0-01] Initialize GitHub repo with README and .gitignore,"Priority: P0
+Status: done",setup,Done
+"[P0-02] Create project directory structure (/backend, /frontend, /parsers, /docs)","Priority: P0
+Status: done",setup,Done
+[P0-03] Set up requirements.txt with dependencies,"Priority: P0
+Status: done",setup,Done
+[P0-04] Create .env.example for environment variables,"Priority: P0
+Status: done",setup,Done
+[P0-05] Migrate existing parser code to /parsers,"Priority: P0
+Status: done",setup,Done
+[P1-01] Set up FastAPI backend with CORS,"Priority: P0
+Status: done",backend,Done
+[P1-02] Create SQLite database with SQLAlchemy ORM,"Priority: P0
+Status: done","backend,database",Done
+[P1-03] Create Newsletter model with all fields,"Priority: P0
+Status: done","backend,database",Done
+[P1-04] Implement Gmail OAuth 2.0 authentication,"Priority: P0
+Status: done","backend,gmail",Done
+[P1-05] GET /api/newsletters - List parsed newsletters,"Priority: P0
+Status: done","backend,api",Done
+[P1-06] GET /api/newsletters/{id} - Get newsletter details,"Priority: P0
+Status: done","backend,api",Done
+[P1-07] POST /api/extract - Trigger email extraction,"Priority: P0
+Status: done","backend,api",Done
+[P1-08] GET /api/categories - List categories with counts,"Priority: P1
+Status: done","backend,api",Done
+[P1-09] GET /api/stats - Overall statistics,"Priority: P2
+Status: done","backend,api",Done
+"[P1-10] Multi-platform parser (Substack, Beehiiv, TLDR, ConvertKit, Generic)","Priority: P0
+Status: done",parser,Done
+[P1-11] Newsletter auto-categorization by sender,"Priority: P0
+Status: done",parser,Done
+"[P1-12] Content validation (min length, sentence structure)","Priority: P1
+Status: done",parser,Done
+[P1-13] React frontend with Vite setup,"Priority: P0
+Status: done",frontend,Done
+[P1-14] Newsletter list view with cards,"Priority: P0
+Status: done",frontend,Done
+[P1-15] Newsletter detail view,"Priority: P0
+Status: done",frontend,Done
+[P1-16] Category and date filtering,"Priority: P1
+Status: done",frontend,Done
+"[P1-17] ""Extract Newsletters"" button","Priority: P0
+Status: done",frontend,Done
+[P2-01] Integrate Anthropic Claude API,"Priority: P0
+Status: done","backend,ai",Done
+[P2-02] Create summarization service module,"Priority: P0
+Status: done","backend,ai",Done
+[P2-03] Implement per-category AI summarization,"Priority: P0
+Status: done","backend,ai",Done
+[P2-04] Add token usage and cost logging,"Priority: P1
+Status: done","backend,ai",Done
+[P2-05] GET /api/ai-summary - Daily AI summaries by category,"Priority: P0
+Status: done","backend,api",Done
+[P2-06] GET /api/newsletters/{id}/ai-summary - Single newsletter AI summary,"Priority: P1
+Status: done","backend,api",Done
+[P2-07] GET /api/daily-briefing - Podcast-style script,"Priority: P0
+Status: done","backend,api",Done
+[P2-08] Summary view in frontend with AI toggle,"Priority: P0
+Status: done",frontend,Done
+"[P2-09] ""Generate Podcast Script"" button","Priority: P0
+Status: done",frontend,Done
+[P2-10] Display briefing/script in UI,"Priority: P0
+Status: done",frontend,Done
+[P2-11] Local timezone handling for date filtering,"Priority: P1
+Status: done",backend,Done
+[P2-12] Prompt templates for different newsletter types,"Priority: P2
+Status: backlog","backend,ai",Phase 2: AI Summarization & Script Generation
+[P2-13] Summary quality validation,"Priority: P2
+Status: backlog","backend,ai",Phase 2: AI Summarization & Script Generation
+[P2-14] Edit/regenerate summary capability,"Priority: P2
+Status: backlog",frontend,Phase 2: AI Summarization & Script Generation
+[P3-01] Integrate TTS engine (Google Cloud TTS or ElevenLabs),"Priority: P0
+Status: ready","backend,audio",Ready
+[P3-02] Voice selection and configuration,"Priority: P1
+Status: backlog","backend,audio",Phase 3: Audio Generation & Playback
+"[P3-03] Audio processing (normalization, pauses, chapters)","Priority: P1
+Status: backlog","backend,audio",Phase 3: Audio Generation & Playback
+[P3-04] MP3 file generation and storage,"Priority: P0
+Status: backlog","backend,audio",Phase 3: Audio Generation & Playback
+[P3-05] POST /api/generate-podcast - Create audio from script,"Priority: P0
+Status: backlog","backend,api",Phase 3: Audio Generation & Playback
+[P3-06] GET /api/podcasts - List all podcasts,"Priority: P0
+Status: backlog","backend,api",Phase 3: Audio Generation & Playback
+[P3-07] GET /api/podcasts/{id}/stream - Stream audio file,"Priority: P0
+Status: backlog","backend,api",Phase 3: Audio Generation & Playback
+[P3-08] GET /api/podcasts/{id}/download - Download audio,"Priority: P1
+Status: backlog","backend,api",Phase 3: Audio Generation & Playback
+[P3-09] Podcasts database table,"Priority: P0
+Status: backlog","backend,database",Phase 3: Audio Generation & Playback
+[P3-10] PodcastNewsletter junction table,"Priority: P1
+Status: backlog","backend,database",Phase 3: Audio Generation & Playback
+[P3-11] Audio player component in frontend,"Priority: P0
+Status: backlog",frontend,Phase 3: Audio Generation & Playback
+"[P3-12] Play, pause, skip controls","Priority: P0
+Status: backlog",frontend,Phase 3: Audio Generation & Playback
+[P3-13] Progress bar with timestamp,"Priority: P0
+Status: backlog",frontend,Phase 3: Audio Generation & Playback
+[P3-14] Playback speed control (0.75x - 2x),"Priority: P1
+Status: backlog",frontend,Phase 3: Audio Generation & Playback
+[P3-15] Chapter navigation (jump to category),"Priority: P2
+Status: backlog",frontend,Phase 3: Audio Generation & Playback
+[P3-16] Download button,"Priority: P2
+Status: backlog",frontend,Phase 3: Audio Generation & Playback
+[P3-17] File cleanup for old podcasts (>30 days),"Priority: P2
+Status: backlog",backend,Phase 3: Audio Generation & Playback
+[P4-01] Set up task scheduler (APScheduler or Celery),"Priority: P0
+Status: backlog","backend,automation",Phase 4: Automation & Scheduling
+[P4-02] Daily extraction task at 5:30 AM,"Priority: P0
+Status: backlog","backend,automation",Phase 4: Automation & Scheduling
+[P4-03] Automatic parsing after extraction,"Priority: P0
+Status: backlog","backend,automation",Phase 4: Automation & Scheduling
+[P4-04] Automatic summarization and podcast generation,"Priority: P0
+Status: backlog","backend,automation",Phase 4: Automation & Scheduling
+[P4-05] Error handling and retry logic,"Priority: P1
+Status: backlog","backend,automation",Phase 4: Automation & Scheduling
+[P4-06] User preferences database table,"Priority: P1
+Status: backlog","backend,database",Phase 4: Automation & Scheduling
+[P4-07] Category priority/ordering preference,"Priority: P1
+Status: backlog",backend,Phase 4: Automation & Scheduling
+[P4-08] Default categories for daily podcast,"Priority: P1
+Status: backlog",backend,Phase 4: Automation & Scheduling
+[P4-09] Voice preference setting,"Priority: P2
+Status: backlog",backend,Phase 4: Automation & Scheduling
+[P4-10] Preferred playback speed setting,"Priority: P2
+Status: backlog",backend,Phase 4: Automation & Scheduling
+[P4-11] Email notification when podcast ready,"Priority: P2
+Status: backlog","backend,notification",Phase 4: Automation & Scheduling
+[P4-12] Settings page in frontend,"Priority: P1
+Status: backlog",frontend,Phase 4: Automation & Scheduling
+[P4-13] New podcast notification indicator,"Priority: P2
+Status: backlog",frontend,Phase 4: Automation & Scheduling
+[P4-14] System status / last run info display,"Priority: P2
+Status: backlog",frontend,Phase 4: Automation & Scheduling
+[P4-15] API usage and cost tracking dashboard,"Priority: P2
+Status: backlog",frontend,Phase 4: Automation & Scheduling
+[P5-01] Bookmark/save newsletters for later,"Priority: P2
+Status: backlog",frontend,Phase 5: Polish & Advanced Features
+[P5-02] Search across all parsed content,"Priority: P1
+Status: backlog","backend,frontend",Phase 5: Polish & Advanced Features
+[P5-03] Custom category creation,"Priority: P2
+Status: backlog","backend,frontend",Phase 5: Polish & Advanced Features
+[P5-04] Weekly/monthly digest options,"Priority: P2
+Status: backlog",backend,Phase 5: Polish & Advanced Features
+[P5-05] Cache summaries to avoid re-generation,"Priority: P1
+Status: backlog",backend,Phase 5: Polish & Advanced Features
+[P5-06] Batch processing for large volumes,"Priority: P2
+Status: backlog",backend,Phase 5: Polish & Advanced Features
+[P5-07] Database indexing and optimization,"Priority: P2
+Status: backlog","backend,database",Phase 5: Polish & Advanced Features
+[P5-08] Dark mode,"Priority: P3
+Status: backlog",frontend,Phase 5: Polish & Advanced Features
+[P5-09] Mobile-responsive design improvements,"Priority: P2
+Status: backlog",frontend,Phase 5: Polish & Advanced Features
+[P5-10] Keyboard shortcuts,"Priority: P3
+Status: backlog",frontend,Phase 5: Polish & Advanced Features
+[P5-11] Progressive Web App (PWA) support,"Priority: P3
+Status: backlog",frontend,Phase 5: Polish & Advanced Features
+[P5-12] Analytics: listening time tracking,"Priority: P2
+Status: backlog",backend,Phase 5: Polish & Advanced Features
+[P5-13] Analytics: completion rates,"Priority: P2
+Status: backlog",backend,Phase 5: Polish & Advanced Features
+[P5-14] Analytics dashboard in frontend,"Priority: P2
+Status: backlog",frontend,Phase 5: Polish & Advanced Features
+[F-01] Personalized summaries based on user interests,"Priority: P1
+Status: idea","ai,personalization",Future Ideas (Post-Phase 5)
+"[F-02] Track engagement (clicks, time spent) for personalization","Priority: P2
+Status: idea",personalization,Future Ideas (Post-Phase 5)
+[F-03] Thumbs up/down feedback on summaries,"Priority: P1
+Status: idea","personalization,frontend",Future Ideas (Post-Phase 5)
+"[F-04] Explicit interest settings (""more AI, less fundraising"")","Priority: P2
+Status: idea",personalization,Future Ideas (Post-Phase 5)
+[F-05] Learn preferred summary length/detail level,"Priority: P2
+Status: idea","personalization,ai",Future Ideas (Post-Phase 5)
+[F-06] Remember read topics to avoid repetition,"Priority: P2
+Status: idea",personalization,Future Ideas (Post-Phase 5)
+[F-07] Weight trusted sources more heavily,"Priority: P2
+Status: idea",personalization,Future Ideas (Post-Phase 5)
+[F-08] Multi-user support with authentication,"Priority: P1
+Status: idea","backend,auth",Future Ideas (Post-Phase 5)
+[F-09] Per-user Gmail connections,"Priority: P1
+Status: idea","backend,gmail",Future Ideas (Post-Phase 5)
+[F-10] PostgreSQL migration for scalability,"Priority: P2
+Status: idea","backend,database",Future Ideas (Post-Phase 5)
+[F-11] Native iOS app,"Priority: P2
+Status: idea",mobile,Future Ideas (Post-Phase 5)
+[F-12] Native Android app,"Priority: P2
+Status: idea",mobile,Future Ideas (Post-Phase 5)
+[F-13] Offline playback support,"Priority: P2
+Status: idea",mobile,Future Ideas (Post-Phase 5)
+[F-14] CarPlay / Android Auto integration,"Priority: P3
+Status: idea",mobile,Future Ideas (Post-Phase 5)
+[F-15] Cross-newsletter insights and connections,"Priority: P2
+Status: idea",ai,Future Ideas (Post-Phase 5)
+[F-16] Automatic topic trending analysis,"Priority: P2
+Status: idea",ai,Future Ideas (Post-Phase 5)
+[F-17] Smart content recommendations,"Priority: P2
+Status: idea",ai,Future Ideas (Post-Phase 5)
+[F-18] Spotify/Apple Podcasts distribution,"Priority: P2
+Status: idea",distribution,Future Ideas (Post-Phase 5)
+[F-19] RSS feed generation,"Priority: P2
+Status: idea",distribution,Future Ideas (Post-Phase 5)
+[F-20] Notion integration for highlights,"Priority: P2
+Status: idea",integration,Future Ideas (Post-Phase 5)
+[F-21] Readwise integration,"Priority: P2
+Status: idea",integration,Future Ideas (Post-Phase 5)
+[F-22] Support for RSS feeds (not just Gmail),"Priority: P1
+Status: idea",backend,Future Ideas (Post-Phase 5)
+[F-23] YouTube video transcript support,"Priority: P3
+Status: idea",backend,Future Ideas (Post-Phase 5)
+[F-24] Twitter/X threads support,"Priority: P3
+Status: idea",backend,Future Ideas (Post-Phase 5)
+[F-25] Trello/Notion backlog sync,"Priority: P3
+Status: idea",tooling,Future Ideas (Post-Phase 5)
+[F-01] Personalized summaries based on user interests,"Priority: P1
+Status: idea","ai,personalization",Future Ideas (Post-Phase 5)
+"[F-02] Track engagement (clicks, time spent) for personalization","Priority: P2
+Status: idea",personalization,Future Ideas (Post-Phase 5)
+[F-03] Thumbs up/down feedback on summaries,"Priority: P1
+Status: idea","personalization,frontend",Future Ideas (Post-Phase 5)
+"[F-04] Explicit interest settings (""more AI, less fundraising"")","Priority: P2
+Status: idea",personalization,Future Ideas (Post-Phase 5)
+[F-05] Learn preferred summary length/detail level,"Priority: P2
+Status: idea","personalization,ai",Future Ideas (Post-Phase 5)
+[F-06] Remember read topics to avoid repetition,"Priority: P2
+Status: idea",personalization,Future Ideas (Post-Phase 5)
+[F-07] Weight trusted sources more heavily,"Priority: P2
+Status: idea",personalization,Future Ideas (Post-Phase 5)
+[F-08] Multi-user support with authentication,"Priority: P1
+Status: idea","backend,auth",Future Ideas (Post-Phase 5)
+[F-09] Per-user Gmail connections,"Priority: P1
+Status: idea","backend,gmail",Future Ideas (Post-Phase 5)
+[F-10] PostgreSQL migration for scalability,"Priority: P2
+Status: idea","backend,database",Future Ideas (Post-Phase 5)
+[F-11] Native iOS app,"Priority: P2
+Status: idea",mobile,Future Ideas (Post-Phase 5)
+[F-12] Native Android app,"Priority: P2
+Status: idea",mobile,Future Ideas (Post-Phase 5)
+[F-13] Offline playback support,"Priority: P2
+Status: idea",mobile,Future Ideas (Post-Phase 5)
+[F-14] CarPlay / Android Auto integration,"Priority: P3
+Status: idea",mobile,Future Ideas (Post-Phase 5)
+[F-15] Cross-newsletter insights and connections,"Priority: P2
+Status: idea",ai,Future Ideas (Post-Phase 5)
+[F-16] Automatic topic trending analysis,"Priority: P2
+Status: idea",ai,Future Ideas (Post-Phase 5)
+[F-17] Smart content recommendations,"Priority: P2
+Status: idea",ai,Future Ideas (Post-Phase 5)
+[F-18] Spotify/Apple Podcasts distribution,"Priority: P2
+Status: idea",distribution,Future Ideas (Post-Phase 5)
+[F-19] RSS feed generation,"Priority: P2
+Status: idea",distribution,Future Ideas (Post-Phase 5)
+[F-20] Notion integration for highlights,"Priority: P2
+Status: idea",integration,Future Ideas (Post-Phase 5)
+[F-21] Readwise integration,"Priority: P2
+Status: idea",integration,Future Ideas (Post-Phase 5)
+[F-22] Support for RSS feeds (not just Gmail),"Priority: P1
+Status: idea",backend,Future Ideas (Post-Phase 5)
+[F-23] YouTube video transcript support,"Priority: P3
+Status: idea",backend,Future Ideas (Post-Phase 5)
+[F-24] Twitter/X threads support,"Priority: P3
+Status: idea",backend,Future Ideas (Post-Phase 5)
+[F-25] Trello/Notion backlog sync,"Priority: P3
+Status: idea",tooling,Future Ideas (Post-Phase 5)

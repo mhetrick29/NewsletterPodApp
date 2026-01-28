@@ -1,0 +1,133 @@
+ID,Name,Status,Priority,Phase,Labels
+P0-01,Initialize GitHub repo with README and .gitignore,Done,P0,Phase 0,setup
+P0-02,"Create project directory structure (/backend, /frontend, /parsers, /docs)",Done,P0,Phase 0,setup
+P0-03,Set up requirements.txt with dependencies,Done,P0,Phase 0,setup
+P0-04,Create .env.example for environment variables,Done,P0,Phase 0,setup
+P0-05,Migrate existing parser code to /parsers,Done,P0,Phase 0,setup
+P1-01,Set up FastAPI backend with CORS,Done,P0,Phase 1,backend
+P1-02,Create SQLite database with SQLAlchemy ORM,Done,P0,Phase 1,"backend, database"
+P1-03,Create Newsletter model with all fields,Done,P0,Phase 1,"backend, database"
+P1-04,Implement Gmail OAuth 2.0 authentication,Done,P0,Phase 1,"backend, gmail"
+P1-05,GET /api/newsletters - List parsed newsletters,Done,P0,Phase 1,"backend, api"
+P1-06,GET /api/newsletters/{id} - Get newsletter details,Done,P0,Phase 1,"backend, api"
+P1-07,POST /api/extract - Trigger email extraction,Done,P0,Phase 1,"backend, api"
+P1-08,GET /api/categories - List categories with counts,Done,P1,Phase 1,"backend, api"
+P1-09,GET /api/stats - Overall statistics,Done,P2,Phase 1,"backend, api"
+P1-10,"Multi-platform parser (Substack, Beehiiv, TLDR, ConvertKit, Generic)",Done,P0,Phase 1,parser
+P1-11,Newsletter auto-categorization by sender,Done,P0,Phase 1,parser
+P1-12,"Content validation (min length, sentence structure)",Done,P1,Phase 1,parser
+P1-13,React frontend with Vite setup,Done,P0,Phase 1,frontend
+P1-14,Newsletter list view with cards,Done,P0,Phase 1,frontend
+P1-15,Newsletter detail view,Done,P0,Phase 1,frontend
+P1-16,Category and date filtering,Done,P1,Phase 1,frontend
+P1-17,"""Extract Newsletters"" button",Done,P0,Phase 1,frontend
+P2-01,Integrate Anthropic Claude API,Done,P0,Phase 2,"backend, ai"
+P2-02,Create summarization service module,Done,P0,Phase 2,"backend, ai"
+P2-03,Implement per-category AI summarization,Done,P0,Phase 2,"backend, ai"
+P2-04,Add token usage and cost logging,Done,P1,Phase 2,"backend, ai"
+P2-05,GET /api/ai-summary - Daily AI summaries by category,Done,P0,Phase 2,"backend, api"
+P2-06,GET /api/newsletters/{id}/ai-summary - Single newsletter AI summary,Done,P1,Phase 2,"backend, api"
+P2-07,GET /api/daily-briefing - Podcast-style script,Done,P0,Phase 2,"backend, api"
+P2-08,Summary view in frontend with AI toggle,Done,P0,Phase 2,frontend
+P2-09,"""Generate Podcast Script"" button",Done,P0,Phase 2,frontend
+P2-10,Display briefing/script in UI,Done,P0,Phase 2,frontend
+P2-11,Local timezone handling for date filtering,Done,P1,Phase 2,backend
+P2-12,Prompt templates for different newsletter types,Backlog,P2,Phase 2,"backend, ai"
+P2-13,Summary quality validation,Backlog,P2,Phase 2,"backend, ai"
+P2-14,Edit/regenerate summary capability,Backlog,P2,Phase 2,frontend
+P3-01,Integrate TTS engine (Google Cloud TTS or ElevenLabs),Ready,P0,Phase 3,"backend, audio"
+P3-02,Voice selection and configuration,Backlog,P1,Phase 3,"backend, audio"
+P3-03,"Audio processing (normalization, pauses, chapters)",Backlog,P1,Phase 3,"backend, audio"
+P3-04,MP3 file generation and storage,Backlog,P0,Phase 3,"backend, audio"
+P3-05,POST /api/generate-podcast - Create audio from script,Backlog,P0,Phase 3,"backend, api"
+P3-06,GET /api/podcasts - List all podcasts,Backlog,P0,Phase 3,"backend, api"
+P3-07,GET /api/podcasts/{id}/stream - Stream audio file,Backlog,P0,Phase 3,"backend, api"
+P3-08,GET /api/podcasts/{id}/download - Download audio,Backlog,P1,Phase 3,"backend, api"
+P3-09,Podcasts database table,Backlog,P0,Phase 3,"backend, database"
+P3-10,PodcastNewsletter junction table,Backlog,P1,Phase 3,"backend, database"
+P3-11,Audio player component in frontend,Backlog,P0,Phase 3,frontend
+P3-12,"Play, pause, skip controls",Backlog,P0,Phase 3,frontend
+P3-13,Progress bar with timestamp,Backlog,P0,Phase 3,frontend
+P3-14,Playback speed control (0.75x - 2x),Backlog,P1,Phase 3,frontend
+P3-15,Chapter navigation (jump to category),Backlog,P2,Phase 3,frontend
+P3-16,Download button,Backlog,P2,Phase 3,frontend
+P3-17,File cleanup for old podcasts (>30 days),Backlog,P2,Phase 3,backend
+P4-01,Set up task scheduler (APScheduler or Celery),Backlog,P0,Phase 4,"backend, automation"
+P4-02,Daily extraction task at 5:30 AM,Backlog,P0,Phase 4,"backend, automation"
+P4-03,Automatic parsing after extraction,Backlog,P0,Phase 4,"backend, automation"
+P4-04,Automatic summarization and podcast generation,Backlog,P0,Phase 4,"backend, automation"
+P4-05,Error handling and retry logic,Backlog,P1,Phase 4,"backend, automation"
+P4-06,User preferences database table,Backlog,P1,Phase 4,"backend, database"
+P4-07,Category priority/ordering preference,Backlog,P1,Phase 4,backend
+P4-08,Default categories for daily podcast,Backlog,P1,Phase 4,backend
+P4-09,Voice preference setting,Backlog,P2,Phase 4,backend
+P4-10,Preferred playback speed setting,Backlog,P2,Phase 4,backend
+P4-11,Email notification when podcast ready,Backlog,P2,Phase 4,"backend, notification"
+P4-12,Settings page in frontend,Backlog,P1,Phase 4,frontend
+P4-13,New podcast notification indicator,Backlog,P2,Phase 4,frontend
+P4-14,System status / last run info display,Backlog,P2,Phase 4,frontend
+P4-15,API usage and cost tracking dashboard,Backlog,P2,Phase 4,frontend
+P5-01,Bookmark/save newsletters for later,Backlog,P2,Phase 5,frontend
+P5-02,Search across all parsed content,Backlog,P1,Phase 5,"backend, frontend"
+P5-03,Custom category creation,Backlog,P2,Phase 5,"backend, frontend"
+P5-04,Weekly/monthly digest options,Backlog,P2,Phase 5,backend
+P5-05,Cache summaries to avoid re-generation,Backlog,P1,Phase 5,backend
+P5-06,Batch processing for large volumes,Backlog,P2,Phase 5,backend
+P5-07,Database indexing and optimization,Backlog,P2,Phase 5,"backend, database"
+P5-08,Dark mode,Backlog,P3,Phase 5,frontend
+P5-09,Mobile-responsive design improvements,Backlog,P2,Phase 5,frontend
+P5-10,Keyboard shortcuts,Backlog,P3,Phase 5,frontend
+P5-11,Progressive Web App (PWA) support,Backlog,P3,Phase 5,frontend
+P5-12,Analytics: listening time tracking,Backlog,P2,Phase 5,backend
+P5-13,Analytics: completion rates,Backlog,P2,Phase 5,backend
+P5-14,Analytics dashboard in frontend,Backlog,P2,Phase 5,frontend
+F-01,Personalized summaries based on user interests,Idea,P1,Future Ideas,"ai, personalization"
+F-02,"Track engagement (clicks, time spent) for personalization",Idea,P2,Future Ideas,personalization
+F-03,Thumbs up/down feedback on summaries,Idea,P1,Future Ideas,"personalization, frontend"
+F-04,"Explicit interest settings (""more AI, less fundraising"")",Idea,P2,Future Ideas,personalization
+F-05,Learn preferred summary length/detail level,Idea,P2,Future Ideas,"personalization, ai"
+F-06,Remember read topics to avoid repetition,Idea,P2,Future Ideas,personalization
+F-07,Weight trusted sources more heavily,Idea,P2,Future Ideas,personalization
+F-08,Multi-user support with authentication,Idea,P1,Future Ideas,"backend, auth"
+F-09,Per-user Gmail connections,Idea,P1,Future Ideas,"backend, gmail"
+F-10,PostgreSQL migration for scalability,Idea,P2,Future Ideas,"backend, database"
+F-11,Native iOS app,Idea,P2,Future Ideas,mobile
+F-12,Native Android app,Idea,P2,Future Ideas,mobile
+F-13,Offline playback support,Idea,P2,Future Ideas,mobile
+F-14,CarPlay / Android Auto integration,Idea,P3,Future Ideas,mobile
+F-15,Cross-newsletter insights and connections,Idea,P2,Future Ideas,ai
+F-16,Automatic topic trending analysis,Idea,P2,Future Ideas,ai
+F-17,Smart content recommendations,Idea,P2,Future Ideas,ai
+F-18,Spotify/Apple Podcasts distribution,Idea,P2,Future Ideas,distribution
+F-19,RSS feed generation,Idea,P2,Future Ideas,distribution
+F-20,Notion integration for highlights,Idea,P2,Future Ideas,integration
+F-21,Readwise integration,Idea,P2,Future Ideas,integration
+F-22,Support for RSS feeds (not just Gmail),Idea,P1,Future Ideas,backend
+F-23,YouTube video transcript support,Idea,P3,Future Ideas,backend
+F-24,Twitter/X threads support,Idea,P3,Future Ideas,backend
+F-25,Trello/Notion backlog sync,Idea,P3,Future Ideas,tooling
+F-01,Personalized summaries based on user interests,Idea,P1,Future Ideas,"ai, personalization"
+F-02,"Track engagement (clicks, time spent) for personalization",Idea,P2,Future Ideas,personalization
+F-03,Thumbs up/down feedback on summaries,Idea,P1,Future Ideas,"personalization, frontend"
+F-04,"Explicit interest settings (""more AI, less fundraising"")",Idea,P2,Future Ideas,personalization
+F-05,Learn preferred summary length/detail level,Idea,P2,Future Ideas,"personalization, ai"
+F-06,Remember read topics to avoid repetition,Idea,P2,Future Ideas,personalization
+F-07,Weight trusted sources more heavily,Idea,P2,Future Ideas,personalization
+F-08,Multi-user support with authentication,Idea,P1,Future Ideas,"backend, auth"
+F-09,Per-user Gmail connections,Idea,P1,Future Ideas,"backend, gmail"
+F-10,PostgreSQL migration for scalability,Idea,P2,Future Ideas,"backend, database"
+F-11,Native iOS app,Idea,P2,Future Ideas,mobile
+F-12,Native Android app,Idea,P2,Future Ideas,mobile
+F-13,Offline playback support,Idea,P2,Future Ideas,mobile
+F-14,CarPlay / Android Auto integration,Idea,P3,Future Ideas,mobile
+F-15,Cross-newsletter insights and connections,Idea,P2,Future Ideas,ai
+F-16,Automatic topic trending analysis,Idea,P2,Future Ideas,ai
+F-17,Smart content recommendations,Idea,P2,Future Ideas,ai
+F-18,Spotify/Apple Podcasts distribution,Idea,P2,Future Ideas,distribution
+F-19,RSS feed generation,Idea,P2,Future Ideas,distribution
+F-20,Notion integration for highlights,Idea,P2,Future Ideas,integration
+F-21,Readwise integration,Idea,P2,Future Ideas,integration
+F-22,Support for RSS feeds (not just Gmail),Idea,P1,Future Ideas,backend
+F-23,YouTube video transcript support,Idea,P3,Future Ideas,backend
+F-24,Twitter/X threads support,Idea,P3,Future Ideas,backend
+F-25,Trello/Notion backlog sync,Idea,P3,Future Ideas,tooling

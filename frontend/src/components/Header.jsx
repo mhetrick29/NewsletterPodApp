@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { newsletterApi } from '../api';
 import './Header.css';
 
 function Header() {
   const [extracting, setExtracting] = useState(false);
   const [message, setMessage] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleExtract = async () => {
     setExtracting(true);
@@ -40,6 +43,12 @@ function Header() {
           <p className="subtitle">Phase 1: Newsletter Viewer</p>
         </div>
         <div className="header-right">
+          <button
+            onClick={() => navigate(location.pathname === '/summary' ? '/' : '/summary')}
+            className="summary-button"
+          >
+            {location.pathname === '/summary' ? '📋 View List' : '📊 View Summary'}
+          </button>
           <button
             onClick={handleExtract}
             disabled={extracting}

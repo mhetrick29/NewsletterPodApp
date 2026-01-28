@@ -43,6 +43,33 @@ export const newsletterApi = {
     const response = await api.get('/api/stats');
     return response.data;
   },
+
+  // Get daily summary grouped by category
+  getSummary: async (date = null) => {
+    const params = date ? { date } : {};
+    const response = await api.get('/api/summary', { params });
+    return response.data;
+  },
+
+  // Get AI-powered summary for a single newsletter
+  getAiSummary: async (newsletterId) => {
+    const response = await api.get(`/api/newsletters/${newsletterId}/ai-summary`);
+    return response.data;
+  },
+
+  // Get AI-powered summaries for all newsletters on a date
+  getAiDailySummary: async (date = null) => {
+    const params = date ? { date } : {};
+    const response = await api.get('/api/ai-summary', { params });
+    return response.data;
+  },
+
+  // Get podcast-style daily briefing
+  getDailyBriefing: async (date = null) => {
+    const params = date ? { date } : {};
+    const response = await api.get('/api/daily-briefing', { params });
+    return response.data;
+  },
 };
 
 export default api;
