@@ -69,28 +69,36 @@ class NewsletterService:
         return True
     
     def extract_newsletters(
-        self, 
+        self,
         db: Session,
         days_back: int = 1,
-        max_results: int = 100
+        max_results: int = 100,
+        target_date: Optional[str] = None
     ) -> Dict:
         """
         Extract newsletters from Gmail and parse them
-        
+
         Args:
             db: Database session
-            days_back: How many days back to search
+            days_back: How many days back to search (ignored if target_date set)
             max_results: Maximum number of emails to retrieve
-            
+            target_date: Specific date to fetch (YYYY-MM-DD). Overrides days_back.
+
         Returns:
             Dict with statistics about the extraction
         """
         if not self.gmail_service:
             self.authenticate_gmail()
-        
+
         # Build query for newsletters
-        date_filter = (datetime.now() - timedelta(days=days_back)).strftime('%Y/%m/%d')
-        query = f'label:newsletters after:{date_filter}'
+        if target_date:
+            from datetime import date as date_type
+            td = datetime.fromisoformat(target_date).date()
+            next_day = td + timedelta(days=1)
+            query = f'label:newsletters after:{td.strftime("%Y/%m/%d")} before:{next_day.strftime("%Y/%m/%d")}'
+        else:
+            date_filter = (datetime.now() - timedelta(days=days_back)).strftime('%Y/%m/%d')
+            query = f'label:newsletters after:{date_filter}'
         
         stats = {
             'total_fetched': 0,
@@ -240,10 +248,24 @@ class NewsletterService:
     def get_categories(self, db: Session) -> List[Dict]:
         """Get all categories with counts"""
         from sqlalchemy import func
-        
+
         results = db.query(
             Newsletter.category,
             func.count(Newsletter.id).label('count')
         ).group_by(Newsletter.category).all()
-        
+
         return [{'category': r.category, 'count': r.count} for r in results]
+
+    @staticmethod
+    def cleanup_old_newsletters(db: Session, retention_days: int = 10) -> int:
+        """
+        Delete newsletters older than retention_days.
+
+        Returns:
+            Number of deleted rows
+        """
+        cutoff = datetime.utcnow() - timedelta(days=retention_days)
+        count = db.query(Newsletter).filter(Newsletter.received_at < cutoff).delete()
+        db.commit()
+        logger.info(f"Cleaned up {count} newsletters older than {retention_days} days")
+        return count

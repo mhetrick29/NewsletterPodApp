@@ -1,25 +1,12 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-import NewsletterList from './components/NewsletterList';
-import NewsletterDetail from './components/NewsletterDetail';
-import SummaryView from './components/SummaryView';
+import DailyFlow from './components/DailyFlow';
 import './App.css';
 
 function App() {
   return (
-    <Router>
-      <div className="app">
-        <Header />
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<NewsletterList />} />
-            <Route path="/summary" element={<SummaryView />} />
-            <Route path="/newsletter/:id" element={<NewsletterDetail />} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+    <div className="app">
+      <DailyFlow />
+    </div>
   );
 }
 

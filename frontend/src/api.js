@@ -5,71 +5,52 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: '',
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' },
   timeout: 300000, // 5 minute timeout for AI operations
 });
 
 export const newsletterApi = {
-  // Get list of newsletters with optional filtering
-  getNewsletters: async (params = {}) => {
+  /**
+   * Fetch newsletters from Gmail for a specific date.
+   * @param {string} targetDate - YYYY-MM-DD (optional, defaults to today on server)
+   */
+  extractNewsletters: async (targetDate = null) => {
+    const body = {};
+    if (targetDate) body.target_date = targetDate;
+    const response = await api.post('/api/extract', body);
+    return response.data;
+  },
+
+  /**
+   * Get list of newsletters already stored for a date.
+   * @param {string} date - YYYY-MM-DD (optional)
+   */
+  getNewsletters: async (date = null) => {
+    const params = date ? { date } : {};
     const response = await api.get('/api/newsletters', { params });
     return response.data;
   },
 
-  // Get single newsletter by ID
-  getNewsletter: async (id) => {
-    const response = await api.get(`/api/newsletters/${id}`);
-    return response.data;
-  },
-
-  // Get all categories with counts
-  getCategories: async () => {
-    const response = await api.get('/api/categories');
-    return response.data;
-  },
-
-  // Trigger newsletter extraction from Gmail
-  extractNewsletters: async (daysBack = 1, maxResults = 100) => {
-    const response = await api.post('/api/extract', {
-      days_back: daysBack,
-      max_results: maxResults,
+  /**
+   * Download a PDF summary for a date (triggers browser download).
+   * @param {string} date - YYYY-MM-DD (optional)
+   */
+  downloadSummaryPdf: async (date = null) => {
+    const params = date ? { date } : {};
+    const response = await api.get('/api/summary-pdf', {
+      params,
+      responseType: 'blob',
     });
-    return response.data;
-  },
-
-  // Get overall statistics
-  getStats: async () => {
-    const response = await api.get('/api/stats');
-    return response.data;
-  },
-
-  // Get daily summary grouped by category
-  getSummary: async (date = null) => {
-    const params = date ? { date } : {};
-    const response = await api.get('/api/summary', { params });
-    return response.data;
-  },
-
-  // Get AI-powered summary for a single newsletter
-  getAiSummary: async (newsletterId) => {
-    const response = await api.get(`/api/newsletters/${newsletterId}/ai-summary`);
-    return response.data;
-  },
-
-  // Get AI-powered summaries for all newsletters on a date
-  getAiDailySummary: async (date = null) => {
-    const params = date ? { date } : {};
-    const response = await api.get('/api/ai-summary', { params });
-    return response.data;
-  },
-
-  // Get podcast-style daily briefing
-  getDailyBriefing: async (date = null) => {
-    const params = date ? { date } : {};
-    const response = await api.get('/api/daily-briefing', { params });
-    return response.data;
+    const url = window.URL.createObjectURL(
+      new Blob([response.data], { type: 'application/pdf' })
+    );
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `newsletter-summary-${date || 'today'}.pdf`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
   },
 };
 

@@ -164,174 +164,63 @@ If there are images or charts referenced, describe what they likely show based o
             logger.error(f"Claude API error: {e}")
             raise
 
-    def create_category_rollup(self, individual_summaries: List[Dict], category_name: str) -> Dict:
+    def synthesize_themes(self, individual_summaries: List[Dict]) -> Dict:
         """
-        Create a category-level summary from individual newsletter summaries.
-        This is much more efficient than processing all raw HTML at once.
+        Identify overlapping themes across all newsletters for a given day.
 
         Args:
             individual_summaries: List of already-generated newsletter summaries
-            category_name: Display name of the category
 
         Returns:
-            Dict with category summary, key_points, and ai_generated flag
+            Dict with themes list and synthesis paragraph
         """
         if not individual_summaries:
             return {
-                "summary": "No newsletters in this category.",
-                "key_points": [],
+                "themes": [],
+                "synthesis": "No newsletters to synthesize.",
                 "ai_generated": True
             }
 
-        # Build context from individual summaries (much smaller than raw HTML)
         summaries_text = []
         for i, summary in enumerate(individual_summaries, 1):
-            summaries_text.append(f"""
-Newsletter {i}: {summary.get('sender_name', 'Unknown')}
-Title: {summary.get('title', 'No title')}
-Summary: {summary.get('summary', 'No summary')}
-Key Points: {', '.join(summary.get('key_points', []))}
-""")
-
-        combined_summaries = "\n".join(summaries_text)
-
-        prompt = f"""You have {len(individual_summaries)} newsletter summaries from the "{category_name}" category. Create a unified category summary.
-
-{combined_summaries}
-
-Create a category-level summary that:
-1. Synthesizes the key themes across all newsletters
-2. Highlights the most important news/insights
-3. Notes any overlapping coverage or different perspectives
-4. Identifies the biggest stories or trends in this category
-
-Respond in JSON format:
-{{
-    "summary": "2-3 paragraph summary of the category's key themes and stories",
-    "key_points": [
-        "Key insight 1 (mention source if relevant)",
-        "Key insight 2 (mention source if relevant)",
-        "Key insight 3 (mention source if relevant)",
-        "Key insight 4 (mention source if relevant)",
-        "Key insight 5 (mention source if relevant)"
-    ]
-}}
-
-Focus on the most important themes and insights."""
-
-        try:
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=1500,
-                messages=[
-                    {"role": "user", "content": prompt}
-                ]
+            summaries_text.append(
+                f"Newsletter {i}: {summary.get('sender_name', 'Unknown')}\n"
+                f"Title: {summary.get('title', 'No title')}\n"
+                f"Summary: {summary.get('summary', 'No summary')}\n"
+                f"Key Points: {', '.join(summary.get('key_points', []))}"
             )
 
-            # Log usage
-            self._log_usage(response, f"Category Rollup: {category_name} ({len(individual_summaries)} newsletters)")
+        combined = "\n\n".join(summaries_text)
 
-            # Parse response
-            response_text = response.content[0].text
-            if "```json" in response_text:
-                response_text = response_text.split("```json")[1].split("```")[0]
-            elif "```" in response_text:
-                response_text = response_text.split("```")[1].split("```")[0]
+        prompt = f"""You have summaries from {len(individual_summaries)} newsletters received today. Identify the overlapping themes and connections across them.
 
-            result = json.loads(response_text.strip())
-            result['ai_generated'] = True
-            return result
-
-        except json.JSONDecodeError as e:
-            logger.error(f"Failed to parse category rollup JSON: {e}")
-            return {
-                "summary": response.content[0].text[:1000] if response else "Failed to generate summary",
-                "key_points": [],
-                "ai_generated": True,
-                "parse_error": True
-            }
-        except Exception as e:
-            logger.error(f"Category rollup failed: {e}")
-            raise
-
-    def summarize_category(self, newsletters: List[Dict], category_name: str) -> Dict:
-        """
-        Create a single combined summary for all newsletters in a category.
-        DEPRECATED: Use individual summarization + create_category_rollup instead.
-        Kept for backward compatibility.
-
-
-        Args:
-            newsletters: List of newsletter dicts with html_content, sender_name, subject
-            category_name: Display name of the category
-
-        Returns:
-            Dict with combined summary, key_points, and per-newsletter highlights
-        """
-        if not newsletters:
-            return {
-                "summary": "No newsletters in this category.",
-                "key_points": [],
-                "newsletters": [],
-                "ai_generated": True
-            }
-
-        # Build context from all newsletters
-        newsletter_context = []
-        for i, nl in enumerate(newsletters, 1):
-            # Use substantial content per newsletter to ensure quality summaries
-            # Rate limiting is handled by delays between category processing
-            html = nl.get('html_content', '')[:50000] if nl.get('html_content') else ''
-            newsletter_context.append(f"""
---- Newsletter {i}: {nl['sender_name']} ---
-Subject: {nl['subject']}
-Content:
-{html}
-""")
-
-        combined_content = "\n".join(newsletter_context)
-
-        prompt = f"""You are reading {len(newsletters)} newsletters from the "{category_name}" category. Read them all and create a unified summary.
-
-{combined_content}
-
-Create a combined summary that:
-1. Synthesizes the key themes and stories across all newsletters
-2. Highlights the most important news/insights
-3. Notes any overlapping coverage or different perspectives on the same topic
-4. Calls out the source newsletter for key points
+{combined}
 
 Respond in JSON format:
 {{
-    "summary": "2-3 paragraph summary of the category's key content",
-    "key_points": [
-        "Key point 1 (Source: Newsletter Name)",
-        "Key point 2 (Source: Newsletter Name)",
-        ...
-    ],
-    "newsletters": [
+    "themes": [
         {{
-            "sender_name": "...",
-            "one_liner": "One sentence summary of this newsletter's unique contribution"
+            "title": "Short theme title",
+            "description": "1-2 sentence description of this theme and why it matters",
+            "sources": ["Newsletter sender names that touch on this theme"]
         }}
-    ]
+    ],
+    "synthesis": "A 2-3 sentence overview paragraph connecting the major themes of the day"
 }}
 
-Focus on substance - ignore ads, promotions, and boilerplate."""
+Identify 3-5 themes. Focus on genuine overlaps and connections, not forced similarities."""
 
         try:
             response = self.client.messages.create(
                 model=self.model,
-                max_tokens=2000,
+                max_tokens=1500,
                 messages=[
                     {"role": "user", "content": prompt}
                 ]
             )
 
-            # Log usage
-            self._log_usage(response, f"Category: {category_name} ({len(newsletters)} newsletters)")
+            self._log_usage(response, f"Theme Synthesis ({len(individual_summaries)} newsletters)")
 
-            # Parse response
             response_text = response.content[0].text
             if "```json" in response_text:
                 response_text = response_text.split("```json")[1].split("```")[0]
@@ -340,130 +229,17 @@ Focus on substance - ignore ads, promotions, and boilerplate."""
 
             result = json.loads(response_text.strip())
             result['ai_generated'] = True
-            result['newsletter_count'] = len(newsletters)
             return result
 
         except json.JSONDecodeError as e:
-            logger.error(f"Failed to parse category summary JSON: {e}")
+            logger.error(f"Failed to parse theme synthesis JSON: {e}")
             return {
-                "summary": response.content[0].text[:1000] if response else "Failed to generate summary",
-                "key_points": [],
-                "newsletters": [],
+                "themes": [],
+                "synthesis": response.content[0].text[:500] if response else "Failed to synthesize themes",
                 "ai_generated": True,
                 "parse_error": True
             }
         except Exception as e:
-            logger.error(f"Category summary failed: {e}")
+            logger.error(f"Theme synthesis failed: {e}")
             raise
 
-    def summarize_multiple(self, newsletters: List[Dict]) -> Dict:
-        """
-        Create a combined summary of multiple newsletters, grouped by category.
-
-        Args:
-            newsletters: List of newsletter dicts with html_content, sender_name, subject, category
-
-        Returns:
-            Dict with category-grouped summaries
-        """
-        # Group by category
-        by_category = {}
-        for nl in newsletters:
-            cat = nl.get('category', 'uncategorized')
-            if cat not in by_category:
-                by_category[cat] = []
-            by_category[cat].append(nl)
-
-        # Summarize each newsletter
-        results = {}
-        for category, nls in by_category.items():
-            results[category] = {
-                'newsletters': []
-            }
-            for nl in nls:
-                try:
-                    summary = self.summarize_newsletter(
-                        nl['html_content'],
-                        nl['sender_name'],
-                        nl['subject']
-                    )
-                    summary['id'] = nl.get('id')
-                    summary['sender_name'] = nl['sender_name']
-                    results[category]['newsletters'].append(summary)
-                except Exception as e:
-                    logger.error(f"Failed to summarize newsletter {nl.get('id')}: {e}")
-                    results[category]['newsletters'].append({
-                        'id': nl.get('id'),
-                        'sender_name': nl['sender_name'],
-                        'title': nl['subject'],
-                        'summary': 'Failed to generate AI summary',
-                        'error': str(e)
-                    })
-
-        return results
-
-    def generate_daily_briefing(self, newsletters: List[Dict]) -> str:
-        """
-        Generate a cohesive daily briefing from multiple newsletters.
-        This could be used as a podcast script.
-
-        Args:
-            newsletters: List of newsletter dicts
-
-        Returns:
-            A natural language briefing suitable for reading aloud
-        """
-        # First summarize each newsletter
-        summaries = []
-        for nl in newsletters:
-            try:
-                summary = self.summarize_newsletter(
-                    nl['html_content'],
-                    nl['sender_name'],
-                    nl['subject']
-                )
-                summary['sender_name'] = nl['sender_name']
-                summary['category'] = nl.get('category', 'general')
-                summaries.append(summary)
-            except Exception as e:
-                logger.error(f"Failed to summarize: {e}")
-                continue
-
-        if not summaries:
-            return "No newsletters to summarize today."
-
-        # Now create a cohesive briefing
-        briefing_prompt = f"""You are creating a daily newsletter briefing that will be read aloud as a podcast.
-
-Here are today's newsletter summaries:
-
-{json.dumps(summaries, indent=2)}
-
-Create a natural, conversational briefing that:
-1. Opens with a brief greeting and overview of what's covered
-2. Groups related topics together logically
-3. Highlights the most important stories first
-4. Uses natural transitions between topics
-5. Ends with a brief wrap-up
-
-The tone should be informative but conversational, like a morning news podcast.
-Aim for about 3-5 minutes of speaking time (roughly 500-750 words).
-
-Do not use any special formatting - just plain text that reads naturally aloud."""
-
-        try:
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=1500,
-                messages=[
-                    {"role": "user", "content": briefing_prompt}
-                ]
-            )
-
-            # Log usage and cost
-            self._log_usage(response, "Daily Briefing")
-
-            return response.content[0].text
-        except Exception as e:
-            logger.error(f"Failed to generate briefing: {e}")
-            raise
