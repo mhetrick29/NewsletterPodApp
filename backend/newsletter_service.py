@@ -6,8 +6,11 @@ import os
 import sys
 import json
 import pickle
+import logging
 from datetime import datetime, timedelta
 from typing import List, Dict, Optional
+
+logger = logging.getLogger(__name__)
 
 # Add parsers directory to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'parsers'))
@@ -132,6 +135,21 @@ class NewsletterService:
                     # Validate
                     is_valid, checks = validate_parsed_content(parsed)
                     
+                    # Parse the email date to a proper datetime
+                    received_datetime = None
+                    if parsed['date']:
+                        try:
+                            from email.utils import parsedate_to_datetime
+                            from datetime import timezone
+                            received_datetime = parsedate_to_datetime(parsed['date'])
+                            # Convert to UTC and remove timezone info for SQLite
+                            received_datetime = received_datetime.astimezone(timezone.utc).replace(tzinfo=None)
+                        except Exception as e:
+                            logger.warning(f"Could not parse date '{parsed['date']}': {e}")
+                            received_datetime = datetime.utcnow()
+                    else:
+                        received_datetime = datetime.utcnow()
+                    
                     # Save to database
                     newsletter = Newsletter(
                         message_id=parsed['message_id'],
@@ -139,9 +157,10 @@ class NewsletterService:
                         sender_email=parsed['sender_email'],
                         subject=parsed['subject'],
                         date=parsed['date'],
+                        received_at=received_datetime,  # Use parsed email date
                         platform=parsed['platform'],
                         category=parsed['category'],
-                        raw_html='',  # We don't store raw HTML to save space
+                        raw_html=parsed['raw_html'],  # Store HTML for AI summarization
                         parsed_content=parsed['content'],
                         title=parsed['title'],
                         sections=json.dumps(parsed['sections']),

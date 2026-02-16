@@ -73,6 +73,8 @@
 | P2-12 | Prompt templates for different newsletter types | `backlog` | P2 | backend, ai |
 | P2-13 | Summary quality validation | `backlog` | P2 | backend, ai |
 | P2-14 | Edit/regenerate summary capability | `backlog` | P2 | frontend |
+| P2-15 | **Stream AI summaries as they're generated** | `ready` | P1 | frontend, backend, ux |
+|       | _Currently frontend waits for all summaries to complete, which can take 3-5 minutes for multiple categories with delays between them. User encounters `AxiosError: timeout of 120000ms exceeded` (ECONNABORTED) when processing takes longer than expected. **Workaround applied**: Increased timeout to 5 minutes (300s) in frontend/backend. **Proper solution**: Implement progressive/streaming display using WebSocket or Server-Sent Events (SSE) to show each newsletter summary as it's generated, then category rollup when complete. This will eliminate timeout issues and greatly improve perceived performance and user experience._ | | | |
 
 ---
 
@@ -140,6 +142,8 @@
 | P5-12 | Analytics: listening time tracking | `backlog` | P2 | backend |
 | P5-13 | Analytics: completion rates | `backlog` | P2 | backend |
 | P5-14 | Analytics dashboard in frontend | `backlog` | P2 | frontend |
+| P5-15 | **Parallel AI processing optimization** | `backlog` | P2 | backend, ai, performance |
+|       | _Currently processing serially (1 newsletter → next newsletter → category rollup) to respect rate limits. Future: Implement parallel processing with smart batching, rate limit management, and potentially higher-tier API access for faster summarization._ | | | |
 
 ---
 

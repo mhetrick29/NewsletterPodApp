@@ -259,19 +259,20 @@ def get_daily_summary(
     from zoneinfo import ZoneInfo
     import time
 
-    # Get local timezone
-    local_tz = ZoneInfo(time.tzname[0]) if time.daylight == 0 else ZoneInfo(time.tzname[1])
+    # Get local timezone - default to America/Los_Angeles (PST/PDT)
+    local_tz = ZoneInfo('America/Los_Angeles')
     try:
         # Try to get proper timezone from system
         import subprocess
-        tz_result = subprocess.run(['readlink', '/etc/localtime'], capture_output=True, text=True)
+        tz_result = subprocess.run(['readlink', '/etc/localtime'], capture_output=True, text=True, timeout=1)
         if tz_result.returncode == 0:
-            # Extract timezone from path like /var/db/timezone/zoneinfo/America/Los_Angeles
+            # Extract timezone from path
             tz_path = tz_result.stdout.strip()
-            tz_name = '/'.join(tz_path.split('/')[-2:])
-            local_tz = ZoneInfo(tz_name)
-    except Exception:
-        pass  # Fall back to UTC offset-based timezone
+            if 'zoneinfo' in tz_path:
+                tz_name = tz_path.split('zoneinfo/')[-1]
+                local_tz = ZoneInfo(tz_name)
+    except Exception as e:
+        logger.warning(f"Could not detect timezone, using America/Los_Angeles: {e}")
 
     # Parse date or use today (in local time)
     if date:
@@ -286,6 +287,8 @@ def get_daily_summary(
     # Convert to UTC for database query (database stores UTC)
     start_dt = local_start.astimezone(ZoneInfo('UTC')).replace(tzinfo=None)
     end_dt = local_end.astimezone(ZoneInfo('UTC')).replace(tzinfo=None)
+    
+    logger.info(f"Querying newsletters from {start_dt} to {end_dt} UTC (local date: {target_date})")
 
     # Query newsletters for this date
     newsletters = db.query(Newsletter).filter(
@@ -391,17 +394,18 @@ def get_daily_ai_summary(
     from zoneinfo import ZoneInfo
     import time
 
-    # Get local timezone (same logic as /api/summary)
-    local_tz = ZoneInfo('UTC')
+    # Get local timezone - default to America/Los_Angeles (PST/PDT)
+    local_tz = ZoneInfo('America/Los_Angeles')
     try:
         import subprocess
-        tz_result = subprocess.run(['readlink', '/etc/localtime'], capture_output=True, text=True)
+        tz_result = subprocess.run(['readlink', '/etc/localtime'], capture_output=True, text=True, timeout=1)
         if tz_result.returncode == 0:
             tz_path = tz_result.stdout.strip()
-            tz_name = '/'.join(tz_path.split('/')[-2:])
-            local_tz = ZoneInfo(tz_name)
-    except Exception:
-        pass
+            if 'zoneinfo' in tz_path:
+                tz_name = tz_path.split('zoneinfo/')[-1]
+                local_tz = ZoneInfo(tz_name)
+    except Exception as e:
+        logger.warning(f"Could not detect timezone, using America/Los_Angeles: {e}")
 
     # Parse date or use today
     if date:
@@ -414,6 +418,8 @@ def get_daily_ai_summary(
     local_end = datetime.combine(target_date, datetime.max.time()).replace(tzinfo=local_tz)
     start_dt = local_start.astimezone(ZoneInfo('UTC')).replace(tzinfo=None)
     end_dt = local_end.astimezone(ZoneInfo('UTC')).replace(tzinfo=None)
+    
+    logger.info(f"Querying newsletters from {start_dt} to {end_dt} UTC (local date: {target_date})")
 
     # Query newsletters
     newsletters = db.query(Newsletter).filter(
@@ -450,48 +456,78 @@ def get_daily_ai_summary(
             newsletters_by_category[cat] = []
         newsletters_by_category[cat].append(nl)
 
-    # Generate ONE AI summary per category
+    # Generate AI summaries: Step 1 - Individual newsletters, Step 2 - Category rollup
     categories = {}
-    for cat, cat_newsletters in newsletters_by_category.items():
+    for idx, (cat, cat_newsletters) in enumerate(newsletters_by_category.items()):
         display_name = category_display_names.get(cat, cat.replace('_', ' ').title())
 
-        try:
-            # Prepare newsletter data for the category
-            newsletter_data = [
-                {
-                    'id': nl.id,
-                    'html_content': nl.raw_html,
-                    'sender_name': nl.sender_name,
-                    'subject': nl.subject
-                }
-                for nl in cat_newsletters if nl.raw_html
-            ]
+        # Add delay between categories to respect rate limits (except for first category)
+        if idx > 0:
+            logger.info(f"Waiting 60 seconds before processing next category to respect rate limits...")
+            time.sleep(60)
 
-            if newsletter_data:
-                category_summary = service.summarize_category(newsletter_data, display_name)
+        try:
+            logger.info(f"Processing category {display_name} ({len(cat_newsletters)} newsletters)")
+            
+            # Step 1: Summarize each newsletter individually
+            individual_summaries = []
+            for nl in cat_newsletters:
+                if not nl.raw_html:
+                    logger.warning(f"Newsletter {nl.id} has no HTML content, skipping")
+                    continue
+                
+                try:
+                    logger.info(f"Summarizing newsletter: {nl.sender_name} - {nl.subject}")
+                    nl_summary = service.summarize_newsletter(
+                        nl.raw_html,
+                        nl.sender_name,
+                        nl.subject
+                    )
+                    nl_summary['id'] = nl.id
+                    nl_summary['sender_name'] = nl.sender_name
+                    individual_summaries.append(nl_summary)
+                    
+                    # Small delay between individual newsletters (5 seconds)
+                    if len(individual_summaries) < len(cat_newsletters):
+                        time.sleep(5)
+                        
+                except Exception as e:
+                    logger.error(f"Failed to summarize newsletter {nl.id}: {e}")
+                    individual_summaries.append({
+                        'id': nl.id,
+                        'sender_name': nl.sender_name,
+                        'title': nl.subject,
+                        'summary': 'Failed to generate summary',
+                        'error': str(e)
+                    })
+            
+            # Step 2: Create category-level summary from individual summaries
+            if individual_summaries:
+                logger.info(f"Creating category rollup for {display_name}")
+                category_summary = service.create_category_rollup(individual_summaries, display_name)
             else:
                 category_summary = {
                     'summary': 'No content available for summarization.',
                     'key_points': [],
-                    'newsletters': [],
                     'ai_generated': False
                 }
+                
         except Exception as e:
-            logger.error(f"Failed to summarize category {cat}: {e}")
+            logger.error(f"Failed to process category {cat}: {e}")
             category_summary = {
                 'summary': f'Failed to generate AI summary: {str(e)}',
                 'key_points': [],
-                'newsletters': [],
                 'error': True
             }
+            individual_summaries = []
 
         categories[cat] = {
             'display_name': display_name,
             'newsletter_count': len(cat_newsletters),
             'summary': category_summary.get('summary', ''),
             'key_points': category_summary.get('key_points', []),
-            'newsletters': category_summary.get('newsletters', []),
-            'ai_generated': category_summary.get('ai_generated', False)
+            'newsletters': individual_summaries,
+            'ai_generated': category_summary.get('ai_generated', True)
         }
 
     return {

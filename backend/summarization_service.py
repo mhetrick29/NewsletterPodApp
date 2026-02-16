@@ -30,7 +30,7 @@ class SummarizationService:
                 "ANTHROPIC_API_KEY environment variable not set. "
                 "Get your API key at https://console.anthropic.com/"
             )
-        self.client = Anthropic(api_key=api_key)
+        self.client = Anthropic(api_key=api_key, timeout=300.0)  # 5 minute timeout
         self.model = "claude-sonnet-4-20250514"
         self.session_stats = {
             "total_input_tokens": 0,
@@ -164,9 +164,102 @@ If there are images or charts referenced, describe what they likely show based o
             logger.error(f"Claude API error: {e}")
             raise
 
+    def create_category_rollup(self, individual_summaries: List[Dict], category_name: str) -> Dict:
+        """
+        Create a category-level summary from individual newsletter summaries.
+        This is much more efficient than processing all raw HTML at once.
+
+        Args:
+            individual_summaries: List of already-generated newsletter summaries
+            category_name: Display name of the category
+
+        Returns:
+            Dict with category summary, key_points, and ai_generated flag
+        """
+        if not individual_summaries:
+            return {
+                "summary": "No newsletters in this category.",
+                "key_points": [],
+                "ai_generated": True
+            }
+
+        # Build context from individual summaries (much smaller than raw HTML)
+        summaries_text = []
+        for i, summary in enumerate(individual_summaries, 1):
+            summaries_text.append(f"""
+Newsletter {i}: {summary.get('sender_name', 'Unknown')}
+Title: {summary.get('title', 'No title')}
+Summary: {summary.get('summary', 'No summary')}
+Key Points: {', '.join(summary.get('key_points', []))}
+""")
+
+        combined_summaries = "\n".join(summaries_text)
+
+        prompt = f"""You have {len(individual_summaries)} newsletter summaries from the "{category_name}" category. Create a unified category summary.
+
+{combined_summaries}
+
+Create a category-level summary that:
+1. Synthesizes the key themes across all newsletters
+2. Highlights the most important news/insights
+3. Notes any overlapping coverage or different perspectives
+4. Identifies the biggest stories or trends in this category
+
+Respond in JSON format:
+{{
+    "summary": "2-3 paragraph summary of the category's key themes and stories",
+    "key_points": [
+        "Key insight 1 (mention source if relevant)",
+        "Key insight 2 (mention source if relevant)",
+        "Key insight 3 (mention source if relevant)",
+        "Key insight 4 (mention source if relevant)",
+        "Key insight 5 (mention source if relevant)"
+    ]
+}}
+
+Focus on the most important themes and insights."""
+
+        try:
+            response = self.client.messages.create(
+                model=self.model,
+                max_tokens=1500,
+                messages=[
+                    {"role": "user", "content": prompt}
+                ]
+            )
+
+            # Log usage
+            self._log_usage(response, f"Category Rollup: {category_name} ({len(individual_summaries)} newsletters)")
+
+            # Parse response
+            response_text = response.content[0].text
+            if "```json" in response_text:
+                response_text = response_text.split("```json")[1].split("```")[0]
+            elif "```" in response_text:
+                response_text = response_text.split("```")[1].split("```")[0]
+
+            result = json.loads(response_text.strip())
+            result['ai_generated'] = True
+            return result
+
+        except json.JSONDecodeError as e:
+            logger.error(f"Failed to parse category rollup JSON: {e}")
+            return {
+                "summary": response.content[0].text[:1000] if response else "Failed to generate summary",
+                "key_points": [],
+                "ai_generated": True,
+                "parse_error": True
+            }
+        except Exception as e:
+            logger.error(f"Category rollup failed: {e}")
+            raise
+
     def summarize_category(self, newsletters: List[Dict], category_name: str) -> Dict:
         """
         Create a single combined summary for all newsletters in a category.
+        DEPRECATED: Use individual summarization + create_category_rollup instead.
+        Kept for backward compatibility.
+
 
         Args:
             newsletters: List of newsletter dicts with html_content, sender_name, subject
@@ -186,8 +279,9 @@ If there are images or charts referenced, describe what they likely show based o
         # Build context from all newsletters
         newsletter_context = []
         for i, nl in enumerate(newsletters, 1):
-            # Truncate HTML to avoid token limits
-            html = nl.get('html_content', '')[:30000] if nl.get('html_content') else ''
+            # Use substantial content per newsletter to ensure quality summaries
+            # Rate limiting is handled by delays between category processing
+            html = nl.get('html_content', '')[:50000] if nl.get('html_content') else ''
             newsletter_context.append(f"""
 --- Newsletter {i}: {nl['sender_name']} ---
 Subject: {nl['subject']}

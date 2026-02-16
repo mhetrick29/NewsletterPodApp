@@ -108,6 +108,7 @@ class NewsletterParser:
                 'date': date,
                 'platform': platform,
                 'category': category,
+                'raw_html': html_body,  # Include raw HTML for AI summarization
                 'content': parsed_content.get('content', ''),
                 'title': parsed_content.get('title', subject),
                 'sections': parsed_content.get('sections', []),
@@ -228,6 +229,7 @@ class NewsletterParser:
             'date': date,
             'platform': 'unknown',
             'category': 'product_ai',
+            'raw_html': '',  # Empty HTML for errors
             'content': '',
             'title': subject,
             'sections': [],

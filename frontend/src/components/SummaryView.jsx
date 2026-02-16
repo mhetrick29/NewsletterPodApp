@@ -8,12 +8,20 @@ function SummaryView() {
   const [briefing, setBriefing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [useAi, setUseAi] = useState(true);
+  const [useAi, setUseAi] = useState(true);  // AI summaries enabled by default
   const [showBriefing, setShowBriefing] = useState(false);
   const [loadingBriefing, setLoadingBriefing] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split('T')[0]
-  );
+  
+  // Get local date (not UTC) for default
+  const getLocalDate = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+  
+  const [selectedDate, setSelectedDate] = useState(getLocalDate());
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,7 +67,17 @@ function SummaryView() {
     return (
       <div className="summary-view">
         <div className="loading">
-          {useAi ? 'AI is reading your newsletters...' : 'Loading summary...'}
+          {useAi ? (
+            <>
+              AI is reading your newsletters... (this may take up to 5 minutes)
+              <br />
+              Step 1: Summarizing each newsletter
+              <br />
+              Step 2: Creating category summaries
+            </>
+          ) : (
+            'Loading summary...'
+          )}
         </div>
       </div>
     );
