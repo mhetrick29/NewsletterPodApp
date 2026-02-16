@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'parsers'))
 
 from google.auth.transport.requests import Request
+from google.auth.exceptions import RefreshError
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
@@ -50,8 +51,14 @@ class NewsletterService:
         # Refresh or create new credentials
         if not creds or not creds.valid:
             if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-            else:
+                try:
+                    creds.refresh(Request())
+                except RefreshError:
+                    logger.warning("Token refresh failed, re-authenticating via browser...")
+                    os.remove(token_path)
+                    creds = None
+
+            if not creds or not creds.valid:
                 if not os.path.exists(credentials_path):
                     raise FileNotFoundError(
                         f"credentials.json not found at {credentials_path}. "
@@ -59,7 +66,7 @@ class NewsletterService:
                     )
                 flow = InstalledAppFlow.from_client_secrets_file(credentials_path, SCOPES)
                 creds = flow.run_local_server(port=0)
-            
+
             # Save credentials
             with open(token_path, 'wb') as token:
                 pickle.dump(creds, token)

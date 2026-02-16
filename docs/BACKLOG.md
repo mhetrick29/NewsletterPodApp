@@ -75,6 +75,10 @@
 | P2-14 | Edit/regenerate summary capability | `backlog` | P2 | frontend |
 | P2-15 | **Stream AI summaries as they're generated** | `ready` | P1 | frontend, backend, ux |
 |       | _Currently frontend waits for all summaries to complete, which can take 3-5 minutes for multiple categories with delays between them. User encounters `AxiosError: timeout of 120000ms exceeded` (ECONNABORTED) when processing takes longer than expected. **Workaround applied**: Increased timeout to 5 minutes (300s) in frontend/backend. **Proper solution**: Implement progressive/streaming display using WebSocket or Server-Sent Events (SSE) to show each newsletter summary as it's generated, then category rollup when complete. This will eliminate timeout issues and greatly improve perceived performance and user experience._ | | | |
+| P2-16 | **User-defined newsletter categories** | `backlog` | P2 | backend, frontend |
+|       | _Replace hardcoded CATEGORY_MAPPING with user-configurable categories. Allow users to create, rename, and assign newsletters to custom categories via the UI. Current hardcoded categories (product_ai, health_fitness, finance, sahil_bloom) removed from AI summary flow; category grouping should be re-introduced as an opt-in user feature._ | | | |
+| P2-17 | Remove category grouping from AI summary, use flat newsletter list | `done` | P1 | backend, api |
+| P2-18 | PDF export of daily newsletter summary with overlapping themes | `done` | P1 | backend, api, frontend |
 
 ---
 
@@ -160,6 +164,8 @@
 | F-07 | Weight trusted sources more heavily | `idea` | P2 | personalization |
 | F-08 | Multi-user support with authentication | `idea` | P1 | backend, auth |
 | F-09 | Per-user Gmail connections | `idea` | P1 | backend, gmail |
+| F-26 | **"Login with Gmail" user auth & profile** | `idea` | P2 | backend, auth, gmail, frontend |
+|       | _Replace the current developer-configured OAuth (credentials.json + token.pickle) with a proper "Login with Gmail" experience. Users should sign up/sign in via Google OAuth in the browser, granting the app Gmail read permission in a single step — no manual credential setup. This creates a user profile tied to their Google account, stores per-user refresh tokens in the DB, and handles token refresh/re-auth transparently. The server-side pickle file approach goes away entirely. Must also include a Privacy Policy and Terms of Service — Google requires these for OAuth consent screen verification, and users should see them linked on the login/sign-up page. Depends on F-08 and F-09._ | | | |
 | F-10 | PostgreSQL migration for scalability | `idea` | P2 | backend, database |
 | F-11 | Native iOS app | `idea` | P2 | mobile |
 | F-12 | Native Android app | `idea` | P2 | mobile |
@@ -206,12 +212,12 @@
 
 **Phase 0:** 5/5 complete (100%)
 **Phase 1:** 17/17 complete (100%)
-**Phase 2:** 11/14 complete (79%)
+**Phase 2:** 13/18 complete (72%)
 **Phase 3:** 0/17 complete (0%)
 **Phase 4:** 0/15 complete (0%)
 **Phase 5:** 0/14 complete (0%)
 
-**Overall Progress:** 33/82 tasks (40%)
+**Overall Progress:** 35/86 tasks (41%)
 
 ---
 
