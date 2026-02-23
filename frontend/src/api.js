@@ -3,8 +3,10 @@
  */
 import axios from 'axios';
 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
+
 const api = axios.create({
-  baseURL: '',
+  baseURL: API_BASE_URL,
   headers: { 'Content-Type': 'application/json' },
   timeout: 300000, // 5 minute timeout for AI operations
 });

@@ -12,8 +12,13 @@ from typing import List, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
-# Add parsers directory to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'parsers'))
+# Add parsers directory to path (supports both repo-root and backend-local layouts)
+DEFAULT_PARSERS_DIRS = [
+    os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'parsers')),
+    os.path.abspath(os.path.join(os.path.dirname(__file__), 'parsers')),
+]
+PARSERS_DIR = next((path for path in DEFAULT_PARSERS_DIRS if os.path.isdir(path)), DEFAULT_PARSERS_DIRS[0])
+sys.path.insert(0, PARSERS_DIR)
 
 from google.auth.transport.requests import Request
 from google.auth.exceptions import RefreshError
@@ -24,9 +29,15 @@ from googleapiclient.errors import HttpError
 
 from newsletter_parser import NewsletterParser, validate_parsed_content
 from sqlalchemy.orm import Session
-from database import Newsletter
+from database import Newsletter, DEFAULT_OWNER_EMAIL
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
+
+
+def normalize_owner_email(owner_email: Optional[str]) -> str:
+    """Normalize missing/empty owner identities to a stable default."""
+    candidate = (owner_email or "").strip().lower()
+    return candidate or DEFAULT_OWNER_EMAIL
 
 
 class NewsletterService:
@@ -39,9 +50,8 @@ class NewsletterService:
     def authenticate_gmail(self) -> bool:
         """Authenticate with Gmail API"""
         creds = None
-        parsers_dir = os.path.join(os.path.dirname(__file__), '..', 'parsers')
-        token_path = os.path.join(parsers_dir, 'token.pickle')
-        credentials_path = os.path.join(parsers_dir, 'credentials.json')
+        token_path = os.path.join(PARSERS_DIR, 'token.pickle')
+        credentials_path = os.path.join(PARSERS_DIR, 'credentials.json')
         
         # Load existing token
         if os.path.exists(token_path):
@@ -64,6 +74,11 @@ class NewsletterService:
                         f"credentials.json not found at {credentials_path}. "
                         "Please add your Google OAuth credentials."
                     )
+                if os.getenv("DISABLE_INTERACTIVE_AUTH", "false").lower() in {"1", "true", "yes"}:
+                    raise RuntimeError(
+                        "Gmail token is missing/invalid and interactive auth is disabled. "
+                        "Generate token.pickle locally, then deploy it with credentials.json."
+                    )
                 flow = InstalledAppFlow.from_client_secrets_file(credentials_path, SCOPES)
                 creds = flow.run_local_server(port=0)
 
@@ -80,7 +95,8 @@ class NewsletterService:
         db: Session,
         days_back: int = 1,
         max_results: int = 100,
-        target_date: Optional[str] = None
+        target_date: Optional[str] = None,
+        owner_email: Optional[str] = None,
     ) -> Dict:
         """
         Extract newsletters from Gmail and parse them
@@ -90,10 +106,13 @@ class NewsletterService:
             days_back: How many days back to search (ignored if target_date set)
             max_results: Maximum number of emails to retrieve
             target_date: Specific date to fetch (YYYY-MM-DD). Overrides days_back.
+            owner_email: Identity used to partition newsletter data per user.
 
         Returns:
             Dict with statistics about the extraction
         """
+        owner_email = normalize_owner_email(owner_email)
+
         if not self.gmail_service:
             self.authenticate_gmail()
 
@@ -128,9 +147,11 @@ class NewsletterService:
             
             for message in messages:
                 try:
+                    scoped_message_id = f"{owner_email}::{message['id']}"
+
                     # Check if already in database
                     existing = db.query(Newsletter).filter(
-                        Newsletter.message_id == message['id']
+                        Newsletter.message_id == scoped_message_id
                     ).first()
                     
                     if existing:
@@ -167,7 +188,8 @@ class NewsletterService:
                     
                     # Save to database
                     newsletter = Newsletter(
-                        message_id=parsed['message_id'],
+                        message_id=scoped_message_id,
+                        owner_email=owner_email,
                         sender_name=parsed['sender_name'],
                         sender_email=parsed['sender_email'],
                         subject=parsed['subject'],

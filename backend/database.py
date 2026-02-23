@@ -1,13 +1,14 @@
 """
 Database models for Newsletter Podcast Agent
 """
-from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, create_engine
+from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, create_engine, inspect, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 import os
 
 Base = declarative_base()
+DEFAULT_OWNER_EMAIL = "default@local"
 
 
 class Newsletter(Base):
@@ -16,6 +17,7 @@ class Newsletter(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     message_id = Column(String, unique=True, index=True, nullable=False)
+    owner_email = Column(String, index=True, nullable=False, default=DEFAULT_OWNER_EMAIL)
     sender_name = Column(String, index=True)
     sender_email = Column(String, index=True)
     subject = Column(String)
@@ -49,6 +51,7 @@ class Newsletter(Base):
         return {
             'id': self.id,
             'message_id': self.message_id,
+            'owner_email': self.owner_email,
             'sender_name': self.sender_name,
             'sender_email': self.sender_email,
             'subject': self.subject,
@@ -87,3 +90,22 @@ def get_db():
 def init_db():
     """Initialize database - create all tables"""
     Base.metadata.create_all(bind=engine)
+    _ensure_owner_email_column()
+
+
+def _ensure_owner_email_column():
+    """
+    Backward-compatible schema patching for existing deployments.
+    """
+    inspector = inspect(engine)
+    columns = {col["name"] for col in inspector.get_columns("newsletters")}
+    with engine.begin() as conn:
+        if "owner_email" not in columns:
+            conn.execute(text("ALTER TABLE newsletters ADD COLUMN owner_email VARCHAR"))
+        conn.execute(
+            text(
+                "UPDATE newsletters SET owner_email = :owner WHERE owner_email IS NULL OR owner_email = ''"
+            ),
+            {"owner": DEFAULT_OWNER_EMAIL},
+        )
+        conn.execute(text("CREATE INDEX IF NOT EXISTS ix_newsletters_owner_email ON newsletters (owner_email)"))

@@ -2,7 +2,7 @@
 FastAPI application for Newsletter Podcast Agent
 Simplified: fetch emails by date, generate PDF summary
 """
-from fastapi import FastAPI, Depends, HTTPException, Query
+from fastapi import FastAPI, Depends, HTTPException, Query, Header
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import Optional, List
@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 from pydantic import BaseModel
 import io
 import logging
+import os
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -21,7 +22,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 from database import get_db, init_db, Newsletter
-from newsletter_service import NewsletterService
+from newsletter_service import NewsletterService, normalize_owner_email
 
 app = FastAPI(
     title="Newsletter Podcast Agent API",
@@ -29,9 +30,20 @@ app = FastAPI(
     version="2.0.0"
 )
 
+default_origins = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+]
+configured_origins = [
+    origin.strip()
+    for origin in os.getenv("CORS_ORIGINS", "").split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],
+    allow_origins=[*default_origins, *configured_origins],
+    allow_origin_regex=os.getenv("CORS_ORIGIN_REGEX", r"https://.*\.vercel\.app"),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -58,6 +70,7 @@ def startup_event():
 class ExtractionRequest(BaseModel):
     target_date: Optional[str] = None  # YYYY-MM-DD; defaults to today
     max_results: int = 100
+    user_email: Optional[str] = None
 
 
 # ---------- Endpoints ----------
@@ -71,17 +84,22 @@ def root():
 @app.get("/api/newsletters")
 def list_newsletters(
     date: Optional[str] = Query(None, description="Date (YYYY-MM-DD), defaults to today"),
+    user_email: Optional[str] = Query(None, description="User identity for multi-user isolation"),
+    x_user_email: Optional[str] = Header(None, alias="X-User-Email"),
     db: Session = Depends(get_db)
 ):
     """Get newsletters for a specific date."""
+    owner_email = normalize_owner_email(user_email or x_user_email)
     target_date, start_dt, end_dt = _get_date_boundaries(date)
 
     newsletters = db.query(Newsletter).filter(
+        Newsletter.owner_email == owner_email,
         Newsletter.received_at >= start_dt,
         Newsletter.received_at <= end_dt
     ).order_by(Newsletter.received_at.desc()).all()
 
     return {
+        "user_email": owner_email,
         "date": target_date.isoformat(),
         "total": len(newsletters),
         "newsletters": [
@@ -99,9 +117,11 @@ def list_newsletters(
 @app.post("/api/extract")
 def extract_newsletters(
     request: ExtractionRequest,
+    x_user_email: Optional[str] = Header(None, alias="X-User-Email"),
     db: Session = Depends(get_db)
 ):
     """Fetch newsletters from Gmail for a target date."""
+    owner_email = normalize_owner_email(request.user_email or x_user_email)
     service = NewsletterService()
 
     try:
@@ -110,11 +130,13 @@ def extract_newsletters(
         stats = service.extract_newsletters(
             db=db,
             target_date=request.target_date,
-            max_results=request.max_results
+            max_results=request.max_results,
+            owner_email=owner_email,
         )
 
         return {
             "success": True,
+            "user_email": owner_email,
             "message": f"Extracted {stats['newly_parsed']} new newsletters",
             "stats": stats
         }
@@ -128,9 +150,12 @@ def extract_newsletters(
 @app.get("/api/summary-pdf")
 def get_summary_pdf(
     date: Optional[str] = Query(None, description="Date (YYYY-MM-DD), defaults to today"),
+    user_email: Optional[str] = Query(None, description="User identity for multi-user isolation"),
+    x_user_email: Optional[str] = Header(None, alias="X-User-Email"),
     db: Session = Depends(get_db)
 ):
     """Generate and return a PDF summary for a given date."""
+    owner_email = normalize_owner_email(user_email or x_user_email)
     import time
     from fastapi.responses import StreamingResponse
     from pdf_service import generate_summary_pdf
@@ -139,6 +164,7 @@ def get_summary_pdf(
     logger.info(f"PDF summary: {start_dt} to {end_dt} UTC (local: {target_date})")
 
     newsletters = db.query(Newsletter).filter(
+        Newsletter.owner_email == owner_email,
         Newsletter.received_at >= start_dt,
         Newsletter.received_at <= end_dt
     ).order_by(Newsletter.received_at.desc()).all()
@@ -232,4 +258,4 @@ def _get_date_boundaries(date_str: str = None):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", "8000")))
