@@ -30,3 +30,6 @@ anthropic>=0.76.0
 
 # PDF Generation
 reportlab>=4.1.0
+
+# Timezone data (required for zoneinfo on python:3.11-slim and Windows)
+tzdata>=2024.1
