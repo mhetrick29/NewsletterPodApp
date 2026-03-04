@@ -2,11 +2,17 @@ import React, { useState } from 'react';
 import { newsletterApi } from '../api';
 import './DailyFlow.css';
 
-const today = () => new Date().toISOString().slice(0, 10);
+const localDateStr = (d) => {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+};
+const today = () => localDateStr(new Date());
 const tenDaysAgo = () => {
   const d = new Date();
   d.setDate(d.getDate() - 10);
-  return d.toISOString().slice(0, 10);
+  return localDateStr(d);
 };
 
 export default function DailyFlow() {
