@@ -34,8 +34,8 @@ jobs:
 
       - name: Set up Gmail credentials
         env:
-          GMAIL_CREDENTIALS_JSON_B64: ${{ secrets.GMAIL_CREDENTIALS_JSON_B64 }}
-          GMAIL_TOKEN_PICKLE_B64: ${{ secrets.GMAIL_TOKEN_PICKLE_B64 }}
+          GMAIL_CREDENTIALS_JSON_B64: ${{ secrets.CREDENTIALS_JSON }}
+          GMAIL_TOKEN_PICKLE_B64: ${{ secrets.TOKEN_PICKLE }}
         run: |
           echo "$GMAIL_CREDENTIALS_JSON_B64" | base64 -d > parsers/credentials.json
           echo "$GMAIL_TOKEN_PICKLE_B64" | base64 -d > parsers/token.pickle
