@@ -93,7 +93,7 @@ Subject: {subject}
 Here is the newsletter HTML content:
 
 <newsletter>
-{html_content[:50000]}
+{html_content[:20000]}
 </newsletter>
 
 Please analyze this newsletter and provide:
@@ -271,7 +271,7 @@ Identify 3-5 themes. Focus on genuine overlaps and connections, not forced simil
                 summary['sender_name'] = nl.get('sender_name', 'Unknown')
                 individual_summaries.append(summary)
                 if i < len(newsletters) - 1:
-                    time.sleep(2)  # Rate limiting between API calls
+                    time.sleep(15)  # Rate limiting — stay under 30K tokens/min
             except Exception as e:
                 logger.error(f"Failed to summarize {nl.get('sender_name', 'Unknown')}: {e}")
                 individual_summaries.append({
