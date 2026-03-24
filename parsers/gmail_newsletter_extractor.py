@@ -58,6 +58,66 @@ def authenticate_gmail():
     
     return creds
 
+def get_html_body(payload):
+    """Extract raw HTML content from email payload (preserves HTML tags)"""
+    if 'parts' in payload:
+        for part in payload['parts']:
+            if part['mimeType'] == 'text/html':
+                data = part['body'].get('data', '')
+                if data:
+                    return base64.urlsafe_b64decode(data).decode('utf-8', errors='ignore')
+            # Check nested parts (multipart/alternative inside multipart/mixed)
+            if 'parts' in part:
+                result = get_html_body(part)
+                if result:
+                    return result
+        # Fallback to plain text if no HTML found
+        for part in payload['parts']:
+            if part['mimeType'] == 'text/plain':
+                data = part['body'].get('data', '')
+                if data:
+                    return base64.urlsafe_b64decode(data).decode('utf-8', errors='ignore')
+    else:
+        data = payload['body'].get('data', '')
+        if data:
+            return base64.urlsafe_b64decode(data).decode('utf-8', errors='ignore')
+    return None
+
+
+def save_as_html_files(service, messages, output_dir):
+    """Save raw email HTML to individual files for downstream parsing"""
+    os.makedirs(output_dir, exist_ok=True)
+    
+    saved_count = 0
+    for message in messages:
+        try:
+            msg = service.users().messages().get(
+                userId='me',
+                id=message['id'],
+                format='full'
+            ).execute()
+            
+            html_body = get_html_body(msg['payload'])
+            
+            if html_body:
+                # Include sender info in filename for easier identification
+                headers = {h['name']: h['value'] for h in msg['payload']['headers']}
+                from_header = headers.get('From', '')
+                sender_name, _ = parseaddr(from_header)
+                safe_name = re.sub(r'[^\w\-]', '_', sender_name or 'unknown')[:50]
+                
+                filename = os.path.join(output_dir, f"{message['id']}_{safe_name}.html")
+                with open(filename, 'w', encoding='utf-8') as f:
+                    f.write(html_body)
+                saved_count += 1
+        except Exception as e:
+            print(f"  ⚠️  Error saving message {message['id']}: {e}")
+            continue
+    
+    print(f"\n✅ Saved {saved_count} emails as HTML files to {output_dir}")
+    return saved_count
+
+
 def get_email_body(payload):
     """Extract text content from email payload"""
     if 'parts' in payload:
@@ -215,45 +275,68 @@ def print_summary(newsletters):
 
 def main():
     """Main execution function"""
-    print("="*80)
-    print("Gmail Newsletter Extractor")
-    print("="*80)
+    import argparse
+    import sys
+    from datetime import timedelta
     
-    # Authenticate
+    parser = argparse.ArgumentParser(description='Extract newsletters from Gmail')
+    parser.add_argument('--output-html', 
+                       help='Save emails as HTML files to this directory')
+    parser.add_argument('--days', type=int, default=1, 
+                       help='Days back to search (default: 1)')
+    parser.add_argument('--max-results', type=int, default=100,
+                       help='Maximum number of emails to fetch (default: 100)')
+    args = parser.parse_args()
+    
+    print("=" * 80)
+    print("Gmail Newsletter Extractor")
+    print("=" * 80)
+    
     creds = authenticate_gmail()
     if not creds:
-        return
+        sys.exit(1)
     
     try:
-        # Build Gmail service
         service = build('gmail', 'v1', credentials=creds)
+        print("\nSuccessfully authenticated with Gmail!")
         
-        print("\nâœ… Successfully authenticated with Gmail!")
+        if args.output_html:
+            after_date = (datetime.now() - timedelta(days=args.days)).strftime('%Y/%m/%d')
+            query = f'label:newsletters after:{after_date}'
+            print(f"\nSearching: {query}")
+            
+            results = service.users().messages().list(
+                userId='me',
+                q=query,
+                maxResults=args.max_results
+            ).execute()
+            
+            messages = results.get('messages', [])
+            
+            if not messages:
+                print("No emails found with 'newsletters' label")
+                sys.exit(1)
+            
+            print(f"Found {len(messages)} newsletter emails")
+            save_as_html_files(service, messages, args.output_html)
+        else:
+            newsletters = extract_newsletters(
+                service,
+                max_emails=args.max_results,
+                get_samples=True
+            )
+            
+            if newsletters:
+                print_summary(newsletters)
+                save_results(newsletters)
+                print("\n" + "=" * 80)
+                print("EXTRACTION COMPLETE!")
+                print("=" * 80)
         
-        # Extract newsletters
-        newsletters = extract_newsletters(
-            service,
-            max_emails=500,  # Adjust if you have more newsletters
-            get_samples=True  # Set to False for faster processing
-        )
-        
-        if newsletters:
-            # Print summary
-            print_summary(newsletters)
-            
-            # Save to file
-            save_results(newsletters)
-            
-            print("\n" + "="*80)
-            print("âœ… EXTRACTION COMPLETE!")
-            print("="*80)
-            print("\nNext steps:")
-            print("1. Review 'newsletter_sources.json' file")
-            print("2. Share this file with Claude to populate the PRD")
-            print("3. Categorize newsletters (Product/Tech, Health/Fitness, Running, Other)")
-            
     except HttpError as error:
-        print(f"\nâŒ An error occurred: {error}")
+        print(f"\nAn error occurred: {error}")
+        sys.exit(1)
+
 
 if __name__ == '__main__':
     main()

@@ -575,3 +575,71 @@ def validate_parsed_content(parsed_data: Dict) -> Tuple[bool, Dict]:
     is_valid = all(checks.values())
     
     return is_valid, checks
+
+
+if __name__ == '__main__':
+    import argparse
+    import os
+    import json
+    import glob as glob_module
+    from datetime import datetime
+
+    parser = argparse.ArgumentParser(description='Parse newsletter HTML files')
+    parser.add_argument('files', nargs='+',
+                       help='HTML files to parse (can use wildcards)')
+    parser.add_argument('--output', required=True,
+                       help='Output JSON file path')
+    args = parser.parse_args()
+
+    # Expand glob patterns
+    all_files = []
+    for pattern in args.files:
+        all_files.extend(glob_module.glob(pattern))
+
+    if not all_files:
+        print("No HTML files found matching the given patterns")
+        exit(1)
+
+    print(f"Parsing {len(all_files)} newsletter files...")
+
+    parser_obj = NewsletterParser()
+    parsed_newsletters = []
+
+    for filepath in all_files:
+        print(f"  Processing: {os.path.basename(filepath)}")
+
+        with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
+            html_content = f.read()
+
+        # Create a mock Gmail message structure for parse_gmail_message()
+        file_id = os.path.basename(filepath).replace('.html', '')
+        mock_message = {
+            'id': file_id,
+            'payload': {
+                'headers': [
+                    {'name': 'From', 'value': 'Unknown <unknown@example.com>'},
+                    {'name': 'Subject', 'value': 'Newsletter'},
+                    {'name': 'Date', 'value': datetime.now().strftime('%a, %d %b %Y %H:%M:%S +0000')}
+                ],
+                'mimeType': 'text/html',
+                'body': {
+                    'data': base64.urlsafe_b64encode(html_content.encode('utf-8')).decode('utf-8')
+                }
+            }
+        }
+
+        result = parser_obj.parse_gmail_message(mock_message)
+        parsed_newsletters.append(result)
+
+    # Save to JSON
+    output_data = {
+        'parsed_at': datetime.now().isoformat(),
+        'total_newsletters': len(parsed_newsletters),
+        'newsletters': parsed_newsletters
+    }
+
+    os.makedirs(os.path.dirname(os.path.abspath(args.output)), exist_ok=True)
+    with open(args.output, 'w', encoding='utf-8') as f:
+        json.dump(output_data, f, indent=2, ensure_ascii=False, default=str)
+
+    print(f"\nSaved {len(parsed_newsletters)} parsed newsletters to {args.output}")

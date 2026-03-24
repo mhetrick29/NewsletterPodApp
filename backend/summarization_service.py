@@ -243,3 +243,81 @@ Identify 3-5 themes. Focus on genuine overlaps and connections, not forced simil
             logger.error(f"Theme synthesis failed: {e}")
             raise
 
+    def generate_daily_summary(self, newsletters: List[Dict], additional_context: Optional[str] = None) -> str:
+        """
+        Generate a complete daily briefing from newsletters, optionally enriched
+        with web search results and company updates.
+
+        Args:
+            newsletters: List of parsed newsletter dicts (with raw_html, sender_name, subject)
+            additional_context: Optional string with web search / company update context
+
+        Returns:
+            Formatted markdown string with the daily summary
+        """
+        import time
+
+        # Step 1: Summarize each newsletter individually
+        individual_summaries = []
+        for i, nl in enumerate(newsletters):
+            logger.info(f"Summarizing newsletter {i+1}/{len(newsletters)}: {nl.get('sender_name', 'Unknown')}")
+            try:
+                html = nl.get('raw_html', nl.get('content', ''))
+                summary = self.summarize_newsletter(
+                    html_content=html,
+                    sender_name=nl.get('sender_name', 'Unknown'),
+                    subject=nl.get('subject', 'No Subject')
+                )
+                summary['sender_name'] = nl.get('sender_name', 'Unknown')
+                individual_summaries.append(summary)
+                if i < len(newsletters) - 1:
+                    time.sleep(2)  # Rate limiting between API calls
+            except Exception as e:
+                logger.error(f"Failed to summarize {nl.get('sender_name', 'Unknown')}: {e}")
+                individual_summaries.append({
+                    'sender_name': nl.get('sender_name', 'Unknown'),
+                    'title': nl.get('subject', 'No Subject'),
+                    'summary': f'Failed to generate summary: {str(e)}',
+                    'key_points': [],
+                    'sections': []
+                })
+
+        # Step 2: Synthesize themes across newsletters
+        theme_data = {}
+        if len(individual_summaries) >= 2:
+            try:
+                theme_data = self.synthesize_themes(individual_summaries)
+            except Exception as e:
+                logger.error(f"Theme synthesis failed: {e}")
+
+        # Step 3: Build the final enriched summary prompt
+        newsletter_section = []
+        for s in individual_summaries:
+            points = '\n'.join(f'  - {p}' for p in s.get('key_points', []))
+            newsletter_section.append(
+                f"### {s.get('sender_name', 'Unknown')}: {s.get('title', '')}\n"
+                f"{s.get('summary', '')}\n"
+                f"**Key Points:**\n{points}"
+            )
+
+        themes_section = ""
+        if theme_data.get('themes'):
+            themes_section = "\n## Cross-Newsletter Themes\n\n"
+            themes_section += f"*{theme_data.get('synthesis', '')}*\n\n"
+            for theme in theme_data['themes']:
+                sources = ', '.join(theme.get('sources', []))
+                themes_section += f"**{theme['title']}**: {theme['description']} *(Sources: {sources})*\n\n"
+
+        context_section = ""
+        if additional_context:
+            context_section = f"\n## Additional Context from Web Search\n\n{additional_context}\n"
+
+        # Combine everything into final markdown
+        summary_md = "## Newsletter Summaries\n\n"
+        summary_md += "\n\n---\n\n".join(newsletter_section)
+        summary_md += "\n\n"
+        summary_md += themes_section
+        summary_md += context_section
+
+        return summary_md
+

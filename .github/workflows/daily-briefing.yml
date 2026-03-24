@@ -1,0 +1,76 @@
+name: Daily Newsletter Briefing
+
+on:
+  schedule:
+    # 17:00 UTC = 10:00 AM PDT (summer) / 9:00 AM PST (winter)
+    # Adjust to '0 18 * * *' during PST months if needed
+    - cron: '0 17 * * *'
+  workflow_dispatch:
+    inputs:
+      days_back:
+        description: 'Number of days back to fetch newsletters'
+        required: false
+        default: '1'
+
+jobs:
+  daily-briefing:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          pip install -r backend/requirements.txt
+
+      - name: Set up Gmail credentials
+        env:
+          GMAIL_CREDENTIALS_JSON_B64: ${{ secrets.GMAIL_CREDENTIALS_JSON_B64 }}
+          GMAIL_TOKEN_PICKLE_B64: ${{ secrets.GMAIL_TOKEN_PICKLE_B64 }}
+        run: |
+          echo "$GMAIL_CREDENTIALS_JSON_B64" | base64 -d > parsers/credentials.json
+          echo "$GMAIL_TOKEN_PICKLE_B64" | base64 -d > parsers/token.pickle
+
+      - name: Set briefing date
+        id: date
+        run: echo "date=$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
+
+      - name: Run daily briefing pipeline
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          BRIEFINGS_DIR: ${{ github.workspace }}/briefings
+        run: |
+          chmod +x scripts/daily_briefing.sh
+          DAYS_BACK=${{ github.event.inputs.days_back || '1' }}
+          # Override --days in the script via env var
+          export PIPELINE_DAYS_BACK=$DAYS_BACK
+          bash scripts/daily_briefing.sh
+
+      - name: Upload briefing artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: briefing-${{ steps.date.outputs.date }}
+          path: ${{ github.workspace }}/briefings/${{ steps.date.outputs.date }}/
+          retention-days: 30
+
+      - name: Summary
+        if: success()
+        run: |
+          echo "## Daily Briefing Generated Successfully" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Date:** ${{ steps.date.outputs.date }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f "${{ github.workspace }}/briefings/${{ steps.date.outputs.date }}/summary.md" ]; then
+            echo "### Summary Preview" >> $GITHUB_STEP_SUMMARY
+            head -50 "${{ github.workspace }}/briefings/${{ steps.date.outputs.date }}/summary.md" >> $GITHUB_STEP_SUMMARY
+          fi
