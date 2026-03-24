@@ -39,6 +39,9 @@ jobs:
         run: |
           echo "$GMAIL_CREDENTIALS_JSON_B64" | base64 -d > parsers/credentials.json
           echo "$GMAIL_TOKEN_PICKLE_B64" | base64 -d > parsers/token.pickle
+          # Also copy to repo root (gmail extractor looks in cwd)
+          cp parsers/credentials.json credentials.json
+          cp parsers/token.pickle token.pickle
 
       - name: Set briefing date
         id: date
