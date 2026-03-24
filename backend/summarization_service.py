@@ -73,6 +73,56 @@ class SummarizationService:
             f"Cost: ${self.session_stats['total_cost']:.4f}"
         )
 
+    def _clean_html_for_summarization(self, html_content: str) -> str:
+        """Extract content-bearing HTML elements, discarding layout cruft."""
+        from bs4 import BeautifulSoup
+
+        soup = BeautifulSoup(html_content, 'html.parser')
+
+        # Remove non-content elements
+        for tag in soup.find_all(['script', 'style', 'meta', 'link', 'head']):
+            tag.decompose()
+
+        # Remove boilerplate
+        for el in list(soup.find_all(string=lambda t: t and any(
+            phrase in t.lower() for phrase in
+            ['unsubscribe', 'view in browser', 'view this email',
+             'email preferences', 'manage preferences', 'powered by', 'sent by']
+        ))):
+            try:
+                if el.parent and el.parent.name in ['a', 'p', 'span', 'td', 'div']:
+                    el.parent.decompose()
+            except Exception:
+                continue
+
+        # Extract only content-bearing elements (headings, paragraphs, lists, links)
+        content_parts = []
+        for el in soup.find_all(['h1', 'h2', 'h3', 'h4', 'p', 'li', 'blockquote', 'a']):
+            text = el.get_text(strip=True)
+            if len(text) < 5:
+                continue
+            if el.name in ['h1', 'h2', 'h3', 'h4']:
+                content_parts.append(f"\n## {text}\n")
+            elif el.name == 'a' and el.get('href'):
+                content_parts.append(f"[{text}]({el['href']})")
+            elif el.name == 'li':
+                content_parts.append(f"- {text}")
+            elif el.name == 'blockquote':
+                content_parts.append(f"> {text}")
+            else:
+                content_parts.append(text)
+
+        cleaned = '\n'.join(content_parts)
+
+        # Deduplicate consecutive identical lines (common in table-based layouts)
+        lines = cleaned.split('\n')
+        deduped = [lines[0]] if lines else []
+        for line in lines[1:]:
+            if line != deduped[-1]:
+                deduped.append(line)
+
+        return '\n'.join(deduped)[:25000]
+
     def summarize_newsletter(self, html_content: str, sender_name: str, subject: str) -> Dict:
         """
         Use Claude to read and summarize a newsletter like a human would.
@@ -90,10 +140,10 @@ class SummarizationService:
 Newsletter from: {sender_name}
 Subject: {subject}
 
-Here is the newsletter HTML content:
+Here is the newsletter content:
 
 <newsletter>
-{html_content[:20000]}
+{self._clean_html_for_summarization(html_content)}
 </newsletter>
 
 Please analyze this newsletter and provide:
