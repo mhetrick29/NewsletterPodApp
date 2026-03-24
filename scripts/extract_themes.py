@@ -7,7 +7,27 @@ Uses Claude to identify 3-5 cross-cutting themes for web search enrichment.
 import os
 import sys
 import json
-from anthropic import Anthropic
+import time
+from anthropic import Anthropic, RateLimitError
+
+MAX_RETRIES = 5
+BASE_RETRY_DELAY = 60
+
+
+def call_with_retry(client, **kwargs):
+    """Call Claude API with exponential backoff on rate limit errors."""
+    for attempt in range(MAX_RETRIES):
+        try:
+            return client.messages.create(**kwargs)
+        except RateLimitError as e:
+            if attempt == MAX_RETRIES - 1:
+                raise
+            retry_after = getattr(e, 'response', None)
+            wait = BASE_RETRY_DELAY * (2 ** attempt)
+            if retry_after and hasattr(retry_after, 'headers'):
+                wait = int(retry_after.headers.get('retry-after', wait))
+            print(f"  Rate limited, waiting {wait}s (attempt {attempt + 1}/{MAX_RETRIES})...")
+            time.sleep(wait)
 
 
 def extract_themes(newsletters):
@@ -46,7 +66,8 @@ Output as JSON:
 
 Only output the JSON array, nothing else."""
 
-    message = client.messages.create(
+    message = call_with_retry(
+        client,
         model="claude-sonnet-4-20250514",
         max_tokens=1000,
         messages=[{"role": "user", "content": prompt}]

@@ -7,8 +7,28 @@ Catches breaking news that newsletters haven't covered yet.
 import os
 import sys
 import json
+import time
 from datetime import datetime
-from anthropic import Anthropic
+from anthropic import Anthropic, RateLimitError
+
+MAX_RETRIES = 5
+BASE_RETRY_DELAY = 60
+
+
+def call_with_retry(client, **kwargs):
+    """Call Claude API with exponential backoff on rate limit errors."""
+    for attempt in range(MAX_RETRIES):
+        try:
+            return client.messages.create(**kwargs)
+        except RateLimitError as e:
+            if attempt == MAX_RETRIES - 1:
+                raise
+            retry_after = getattr(e, 'response', None)
+            wait = BASE_RETRY_DELAY * (2 ** attempt)
+            if retry_after and hasattr(retry_after, 'headers'):
+                wait = int(retry_after.headers.get('retry-after', wait))
+            print(f"  Rate limited, waiting {wait}s (attempt {attempt + 1}/{MAX_RETRIES})...")
+            time.sleep(wait)
 
 # Major AI companies to monitor
 COMPANIES = [
@@ -36,7 +56,8 @@ If there's nothing significant in the past 24 hours, return "No major updates."
 """
 
     try:
-        message = client.messages.create(
+        message = call_with_retry(
+            client,
             model="claude-sonnet-4-20250514",
             max_tokens=500,
             tools=[{"type": "web_search_20250305", "name": "web_search"}],
@@ -89,6 +110,9 @@ def main():
             significant_updates += 1
         else:
             print(f"  No major updates")
+
+        if i < len(COMPANIES):
+            time.sleep(15)  # Rate limiting between searches
 
     output = {
         'searched_at': datetime.now().isoformat(),

@@ -7,7 +7,27 @@ Uses Claude's web search tool to find recent news related to newsletter themes.
 import os
 import sys
 import json
-from anthropic import Anthropic
+import time
+from anthropic import Anthropic, RateLimitError
+
+MAX_RETRIES = 5
+BASE_RETRY_DELAY = 60
+
+
+def call_with_retry(client, **kwargs):
+    """Call Claude API with exponential backoff on rate limit errors."""
+    for attempt in range(MAX_RETRIES):
+        try:
+            return client.messages.create(**kwargs)
+        except RateLimitError as e:
+            if attempt == MAX_RETRIES - 1:
+                raise
+            retry_after = getattr(e, 'response', None)
+            wait = BASE_RETRY_DELAY * (2 ** attempt)
+            if retry_after and hasattr(retry_after, 'headers'):
+                wait = int(retry_after.headers.get('retry-after', wait))
+            print(f"  Rate limited, waiting {wait}s (attempt {attempt + 1}/{MAX_RETRIES})...")
+            time.sleep(wait)
 
 
 def search_theme(client, theme):
@@ -19,7 +39,8 @@ Focus on: {theme['description']}
 Find 2-3 recent news articles or developments from the past week.
 Summarize key findings in 2-3 sentences."""
 
-    message = client.messages.create(
+    message = call_with_retry(
+        client,
         model="claude-sonnet-4-20250514",
         max_tokens=500,
         tools=[{"type": "web_search_20250305", "name": "web_search"}],
@@ -65,6 +86,8 @@ def main():
                 'search_result': result
             })
             print(f"  Found relevant news")
+            if i < len(themes):
+                time.sleep(15)  # Rate limiting between searches
         except Exception as e:
             print(f"  Search failed: {e}")
             search_results.append({

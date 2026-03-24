@@ -4,9 +4,10 @@ Phase 2: Intelligent newsletter summarization
 """
 import os
 import json
+import time
 import logging
 from typing import Dict, List, Optional
-from anthropic import Anthropic
+from anthropic import Anthropic, RateLimitError
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
@@ -18,6 +19,10 @@ PRICING = {
     "claude-3-5-sonnet-20241022": {"input": 3.00, "output": 15.00},
     "claude-3-haiku-20240307": {"input": 0.25, "output": 1.25},
 }
+
+# Retry configuration for rate limits
+MAX_RETRIES = 5
+BASE_RETRY_DELAY = 60  # Start with 60 seconds on rate limit
 
 
 class SummarizationService:
@@ -39,6 +44,26 @@ class SummarizationService:
             "api_calls": 0,
             "started_at": datetime.now().isoformat()
         }
+
+    def _call_with_retry(self, **kwargs) -> object:
+        """Call Claude API with exponential backoff retry on rate limit errors."""
+        for attempt in range(MAX_RETRIES):
+            try:
+                return self.client.messages.create(**kwargs)
+            except RateLimitError as e:
+                if attempt == MAX_RETRIES - 1:
+                    raise
+                # Extract retry-after header if available, otherwise use exponential backoff
+                retry_after = getattr(e, 'response', None)
+                if retry_after and hasattr(retry_after, 'headers'):
+                    wait = int(retry_after.headers.get('retry-after', BASE_RETRY_DELAY))
+                else:
+                    wait = BASE_RETRY_DELAY * (2 ** attempt)
+                logger.warning(
+                    f"Rate limited (attempt {attempt + 1}/{MAX_RETRIES}), "
+                    f"waiting {wait}s before retry..."
+                )
+                time.sleep(wait)
 
     def _log_usage(self, response, context: str = ""):
         """Log token usage and cost for an API call"""
@@ -174,7 +199,7 @@ Focus on the actual content - ignore navigation, footers, unsubscribe links, and
 If there are images or charts referenced, describe what they likely show based on context."""
 
         try:
-            response = self.client.messages.create(
+            response = self._call_with_retry(
                 model=self.model,
                 max_tokens=2000,
                 messages=[
@@ -261,7 +286,7 @@ Respond in JSON format:
 Identify 3-5 themes. Focus on genuine overlaps and connections, not forced similarities."""
 
         try:
-            response = self.client.messages.create(
+            response = self._call_with_retry(
                 model=self.model,
                 max_tokens=1500,
                 messages=[
@@ -321,7 +346,7 @@ Identify 3-5 themes. Focus on genuine overlaps and connections, not forced simil
                 summary['sender_name'] = nl.get('sender_name', 'Unknown')
                 individual_summaries.append(summary)
                 if i < len(newsletters) - 1:
-                    time.sleep(15)  # Rate limiting — stay under 30K tokens/min
+                    time.sleep(30)  # Rate limiting — stay under 30K tokens/min
             except Exception as e:
                 logger.error(f"Failed to summarize {nl.get('sender_name', 'Unknown')}: {e}")
                 individual_summaries.append({
